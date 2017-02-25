@@ -2,6 +2,7 @@
 // This is where you build your AI
 
 #include "ai.hpp"
+#include <ctime>
 
 // You can add #includes here for your AI.
 
