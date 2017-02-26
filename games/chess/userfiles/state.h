@@ -10,5 +10,5 @@ class state
   public:
     state();
   private:
-    board<tile<piece> > theBoard;
+    board<tile<piece> > m_board;
 };

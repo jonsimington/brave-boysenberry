@@ -1,4 +1,7 @@
 #pragma once
+#include "board.h"
+#include "tile.h"
+
 class piece
 {
   public:
@@ -8,4 +11,5 @@ class piece
   private:
     int m_x;
     int m_y;
+    //board<tile<piece> > m_board;
 };

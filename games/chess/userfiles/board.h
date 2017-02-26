@@ -1,4 +1,7 @@
 #pragma once
+#include "piece.h"
+class piece;
+
 template <typename T>
 class board
 {
@@ -13,6 +16,7 @@ class board
   private:
     T** m_data;
     static int const m_length;
+    friend piece;
 };
 
 #include "board.hpp"
