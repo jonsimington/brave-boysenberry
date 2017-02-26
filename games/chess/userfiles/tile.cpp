@@ -20,3 +20,8 @@ bool tile::occupied() const
 {
   return m_piece != nullptr;
 }
+
+const piece & tile::getPiece() const
+{
+  return *m_piece;
+}

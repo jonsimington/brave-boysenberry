@@ -38,3 +38,7 @@ void piece::remove()
 {
   m_inUse = false;
 }
+
+int piece::getX() const {return m_x;}
+int piece::getY() const {return m_y;}
+int piece::getId() const {return m_id;}

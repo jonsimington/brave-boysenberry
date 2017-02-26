@@ -10,6 +10,7 @@ class tile
     void release();
     void move(piece & p);
     bool occupied() const;
+    const piece & getPiece() const;
   private:
     piece* m_piece;
 };

@@ -14,6 +14,9 @@ class piece
     bool operator < (const piece & rhs) const;
     void move(const int & x, const int & y);
     void remove();
+    int getX() const;
+    int getY() const;
+    int getId() const;
   protected:
     int m_x;
     int m_y;
