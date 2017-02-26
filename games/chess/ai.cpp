@@ -2,6 +2,7 @@
 // This is where you build your AI
 
 #include "ai.hpp"
+#include "userfiles/state.h"
 #include <ctime>
 
 // You can add #includes here for your AI.
@@ -20,7 +21,7 @@ namespace chess
 std::string AI::get_name() const
 {
     // REPLACE WITH YOUR TEAM NAME!
-    return "Chess C++ Player";
+    return "Joshua Zygmunt";
 }
 
 /// <summary>
@@ -28,6 +29,7 @@ std::string AI::get_name() const
 /// </summary>
 void AI::start()
 {
+    state currentState;
     // This is a good place to initialize any variables
     srand(time(NULL));
 }
