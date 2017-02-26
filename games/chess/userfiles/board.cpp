@@ -1,6 +1,6 @@
 #include "board.h"
 
-int const board::m_length = 8;
+int const board::m_length = boardLength;
 
 board::board()
 {
@@ -55,4 +55,9 @@ const tile* board::operator [] (const int & i) const
 tile* board::operator [] (const int & i)
 {
   return m_data[i];
+}
+
+int board::getLength() const
+{
+  return m_length;
 }

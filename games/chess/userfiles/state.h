@@ -12,5 +12,8 @@ class state
     state();
   private:
     board m_board;
-    std::set<piece> m_pieces;
+    //friendly pieces
+    std::set<piece> m_fp;
+    //enemy pieces
+    std::set<piece> m_ep;
 };

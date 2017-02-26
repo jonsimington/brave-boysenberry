@@ -8,7 +8,8 @@ class tile
   public:
     tile();
     void release();
-    void add(piece & p);//needs more work
+    void move(piece & p);
+    bool occupied() const;
   private:
     piece* m_piece;
 };
