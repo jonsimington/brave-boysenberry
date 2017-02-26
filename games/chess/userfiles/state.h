@@ -1,4 +1,5 @@
 #pragma once
+#include <set>
 #include "board.h"
 #include "tile.h"
 #include "pawn.h"
@@ -10,5 +11,6 @@ class state
   public:
     state();
   private:
-    board<tile<piece> > m_board;
+    board m_board;
+    std::set<piece> m_pieces;
 };

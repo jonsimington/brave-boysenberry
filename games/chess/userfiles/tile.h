@@ -1,10 +1,14 @@
 #pragma once
-template <typename T>
+#include "piece.h"
+
+class piece;
+
 class tile
 {
   public:
     tile();
+    void release();
+    void add(piece & p);//needs more work
   private:
-    T* m_object;
+    piece* m_piece;
 };
-#include "tile.hpp"
