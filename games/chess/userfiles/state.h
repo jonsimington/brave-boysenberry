@@ -1,4 +1,6 @@
 #pragma once
+#include "../game.hpp"
+#include ".../joueur/src/base_ai.hpp"
 #include <set>
 #include "board.h"
 #include "tile.h"
@@ -6,7 +8,6 @@
 #include "rook.h"
 #include "bishop.h"
 #include "knight.h"
-#include "../game.hpp"
 class state
 {
   public:
