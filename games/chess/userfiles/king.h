@@ -1,5 +1,8 @@
 #pragma once
-class king
+#include"mypiece.h"
+class king: public mypiece
 {
-  
+  public:
+    std::vector<action> possibleActions() const;
+  private:
 };
