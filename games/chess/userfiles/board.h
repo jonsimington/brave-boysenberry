@@ -1,5 +1,4 @@
 #pragma once
-#include "../game.hpp"
 #include "mypiece.h"
 #include "tile.h"
 #define boardLength 8

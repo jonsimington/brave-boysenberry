@@ -6,6 +6,7 @@
 #include "rook.h"
 #include "bishop.h"
 #include "knight.h"
+#include "../game.hpp"
 class state
 {
   public:
