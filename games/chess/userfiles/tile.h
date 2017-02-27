@@ -1,16 +1,16 @@
 #pragma once
-#include "piece.h"
+#include "mypiece.h"
 
-class piece;
+class mypiece;
 
 class tile
 {
   public:
     tile();
     void release();
-    void move(piece & p);
+    void move(mypiece & p);
     bool occupied() const;
-    const piece & getPiece() const;
+    const mypiece & getPiece() const;
   private:
-    piece* m_piece;
+    mypiece* m_mypiece;
 };

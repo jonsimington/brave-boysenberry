@@ -5,13 +5,13 @@
 #include "utility.h"
 class board;
 
-class piece
+class mypiece
 {
   public:
-    piece();
-    piece(const int & x, const int & y);
+    mypiece();
+    mypiece(const int & x, const int & y);
     void place(const int & x, const int & y);
-    bool operator < (const piece & rhs) const;
+    bool operator < (const mypiece & rhs) const;
     void move(const int & x, const int & y);
     void remove();
     int getX() const;

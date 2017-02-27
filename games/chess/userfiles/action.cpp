@@ -9,7 +9,7 @@ action::action(const int & id, const int & sx, const int & sy,
                m_id(id), m_pr(-1), m_sx(sx), m_sy(sy),
                m_ex(ex), m_ey(ey) {}
               
-action::action(const piece & pm, const piece & pr)
+action::action(const mypiece & pm, const mypiece & pr)
 {
   m_sx = pm.getX();
   m_sy = pm.getY();
@@ -19,7 +19,7 @@ action::action(const piece & pm, const piece & pr)
   m_pr = pm.getId();
 }
 
-action::action(const piece & pm, const int & x, const int & y)
+action::action(const mypiece & pm, const int & x, const int & y)
 {
   m_sx = pm.getX();
   m_sy = pm.getY();

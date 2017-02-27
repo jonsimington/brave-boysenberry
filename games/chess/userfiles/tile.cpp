@@ -1,27 +1,27 @@
 #include "tile.h"
 tile::tile()
 {
-  m_piece = nullptr;
+  m_mypiece = nullptr;
 }
 
 void tile::release()
 {
-  m_piece = nullptr;
+  m_mypiece = nullptr;
 }
 
-void tile::move(piece & p)
+void tile::move(mypiece & p)
 {
-  if(m_piece != nullptr)
-    m_piece->remove();
-  m_piece = &p;
+  if(m_mypiece != nullptr)
+    m_mypiece->remove();
+  m_mypiece = &p;
 }
 
 bool tile::occupied() const
 {
-  return m_piece != nullptr;
+  return m_mypiece != nullptr;
 }
 
-const piece & tile::getPiece() const
+const mypiece & tile::getPiece() const
 {
-  return *m_piece;
+  return *m_mypiece;
 }

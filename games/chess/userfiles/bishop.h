@@ -1,7 +1,10 @@
 #pragma once
-#include "piece.h"
-class bishop: public piece
+#include "mypiece.h"
+#include "action.h"
+#include <vector>
+class bishop: public mypiece
 {
   public:
+    std::vector<action> possibleActions() const;
   private:
 };

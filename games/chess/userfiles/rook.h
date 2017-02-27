@@ -1,7 +1,10 @@
 #pragma once
-#include "piece.h"
-class rook: public piece
+#include <vector>
+#include "mypiece.h"
+#include "action.h"
+class rook: public mypiece
 {
   public:
+    std::vector<action> possibleActions() const;
   private:
 };

@@ -2,7 +2,7 @@
 
 pawn::pawn(const int & x, const int & y, const bool direction)
 {
-  piece(x,y);
+  mypiece(x,y);
   m_direction = true;
 }
 

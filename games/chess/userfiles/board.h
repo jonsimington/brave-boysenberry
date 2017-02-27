@@ -1,9 +1,9 @@
 #pragma once
-#include "../game.hpp"
-#include "piece.h"
+//#include "../game.hpp"
+#include "mypiece.h"
 #include "tile.h"
 #define boardLength 8
-class piece;
+class mypiece;
 class tile;
 
 class board
@@ -20,5 +20,5 @@ class board
   private:
     tile** m_data;
     static int const m_length;
-    friend piece;
+    friend mypiece;
 };

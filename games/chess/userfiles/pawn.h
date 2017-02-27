@@ -1,7 +1,7 @@
 #pragma once
 #include<vector>
-#include "piece.h"
-class pawn: public piece
+#include "mypiece.h"
+class pawn: public mypiece
 {
   public:
     pawn(const int & x, const int & y, const bool direction);

@@ -1,6 +1,6 @@
 #pragma once
-#include "piece.h"
-class knight: public piece
+#include "mypiece.h"
+class knight: public mypiece
 {
   
 };

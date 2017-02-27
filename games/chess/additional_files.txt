@@ -3,12 +3,11 @@
 # You would add the following line to this folder (without the #)
 # my_code/stuff.cpp
 # If your build fails after adding files, try to build again
-userfiles/action.cpp
 userfiles/tile.cpp
 userfiles/board.cpp
 userfiles/state.cpp
 userfiles/node.cpp
-userfiles/piece.cpp
+userfiles/mypiece.cpp
 userfiles/pawn.cpp
 userfiles/rook.cpp
 userfiles/bishop.cpp
@@ -16,3 +15,4 @@ userfiles/knight.cpp
 userfiles/queen.cpp
 userfiles/king.cpp
 userfiles/utility.cpp
+userfiles/action.cpp
