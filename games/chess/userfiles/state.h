@@ -1,7 +1,8 @@
 #pragma once
 #include "../game.hpp"
-#include ".../joueur/src/base_ai.hpp"
+#include "../../../joueur/src/base_ai.hpp"
 #include <set>
+#include <vector>
 #include "board.h"
 #include "tile.h"
 #include "pawn.h"
