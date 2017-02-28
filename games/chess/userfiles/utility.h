@@ -1,6 +1,11 @@
 #pragma once
+#define myAI "Joshua Zygmunt"
 #include <string>
 #include <vector>
+#include "../game.hpp"
+#include "../../../joueur/src/base_ai.hpp"
+#include "../player.hpp"
+#include "../piece.hpp"
 template <typename T>
 std::vector<T> operator + (const std::vector<T> & lhs, const std::vector<T> & rhs)
 {

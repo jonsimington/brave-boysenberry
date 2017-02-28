@@ -1,5 +1,10 @@
 #include "bishop.h"
 
+bishop::bishop(const int & x, const int & y)
+{
+  mypiece(x,y);
+}
+
 std::vector<action> bishop::possibleActions() const
 {
   std::vector<action> allActions;

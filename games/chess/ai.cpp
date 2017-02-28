@@ -3,8 +3,8 @@
 
 #include "ai.hpp"
 #include "userfiles/state.h"
+#include "userfiles/utility.h"
 #include <ctime>
-
 // You can add #includes here for your AI.
 
 namespace cpp_client
@@ -21,7 +21,7 @@ namespace chess
 std::string AI::get_name() const
 {
     // REPLACE WITH YOUR TEAM NAME!
-    return "Joshua Zygmunt";
+    return myAI;
 }
 
 /// <summary>
@@ -29,8 +29,7 @@ std::string AI::get_name() const
 /// </summary>
 void AI::start()
 {
-    state currentState;
-    // This is a good place to initialize any variables
+    state currentState(cpp_client::chess::Game);
     srand(time(NULL));
 }
 

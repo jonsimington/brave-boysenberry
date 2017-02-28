@@ -4,9 +4,7 @@ int const board::m_length = boardLength;
 
 board::board()
 {
-  m_data = new tile*[m_length];
-  for(int i = 0; i < m_length; i++)
-    m_data[i] = new tile[m_length];
+  create();
 }
 
 board::~board()
@@ -22,9 +20,14 @@ board::~board()
 
 board::board(const board & rhs)
 {
+  create();
   for(int i = 0; i < m_length; i++)
+  {
     for(int j = 0; j < m_length; j++)
+    {
       m_data[i][j] = rhs.m_data[i][j];
+    }
+  }
 }
 
 const board & board::operator = (const board & rhs)
@@ -60,4 +63,11 @@ tile* board::operator [] (const int & i)
 int board::getLength() const
 {
   return m_length;
+}
+
+void board::create()
+{
+  m_data = new tile*[m_length];
+  for(int i = 0; i < m_length; i++)
+    m_data[i] = new tile[m_length];
 }

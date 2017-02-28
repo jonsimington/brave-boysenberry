@@ -1,14 +1,5 @@
 #include "action.h"
-action::action(const int & id, const int & pr, const int & sx, 
-               const int & sy, const int & ex, const int & ey): 
-               m_id(id), m_pr(pr), m_sx(sx), m_sy(sy),
-               m_ex(ex), m_ey(ey) {}
 
-action::action(const int & id, const int & sx, const int & sy, 
-               const int & ex, const int & ey): 
-               m_id(id), m_pr(-1), m_sx(sx), m_sy(sy),
-               m_ex(ex), m_ey(ey) {}
-              
 action::action(const mypiece & pm, const mypiece & pr)
 {
   m_sx = pm.getX();
@@ -26,5 +17,4 @@ action::action(const mypiece & pm, const int & x, const int & y)
   m_ex = x;
   m_ey = y;
   m_id = pm.getId();
-  m_pr = -1;
 }

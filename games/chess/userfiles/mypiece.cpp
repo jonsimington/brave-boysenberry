@@ -7,6 +7,7 @@ mypiece::mypiece(const int & x, const int & y)
   m_x = x;
   m_y = y;
   m_inUse = true;
+  m_hasMoved = false;
 }
 
 void mypiece::place(const int & x, const int & y)
@@ -25,13 +26,7 @@ void mypiece::move(const int & x, const int & y)
 
 bool mypiece::operator < (const mypiece & rhs) const
 {
-  if(m_x < rhs.m_x)
-    return true;
-  if(m_x > rhs.m_x)
-    return false;
-  if(m_y < rhs.m_y)
-    return true;
-  return false;
+  return m_id < rhs.m_id;
 }
 
 void mypiece::remove()
@@ -41,4 +36,4 @@ void mypiece::remove()
 
 int mypiece::getX() const {return m_x;}
 int mypiece::getY() const {return m_y;}
-int mypiece::getId() const {return m_id;}
+std::string mypiece::getId() const {return m_id;}

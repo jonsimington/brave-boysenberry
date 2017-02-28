@@ -16,11 +16,13 @@ class mypiece
     void remove();
     int getX() const;
     int getY() const;
-    int getId() const;
+    std::string getId() const;
   protected:
+    friend class state;
     int m_x;
     int m_y;
     board* m_board;
     bool m_inUse;
-    int m_id;
+    std::string m_id;
+    bool m_hasMoved;
 };

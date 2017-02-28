@@ -5,6 +5,7 @@
 class bishop: public mypiece
 {
   public:
+    bishop(const int & x, const int & y);
     std::vector<action> possibleActions() const;
   private:
 };

@@ -1,5 +1,10 @@
 #include "rook.h"
 #include "board.h"
+rook::rook(const int & x, const int & y)
+{
+  mypiece(x,y);
+}
+
 std::vector<action> rook::possibleActions() const
 {
   std::vector<action> allActions;

@@ -17,6 +17,7 @@ class board
     tile* operator [] (const int & i);
     int getLength() const;
   private:
+    void create();
     tile** m_data;
     static int const m_length;
     friend mypiece;
