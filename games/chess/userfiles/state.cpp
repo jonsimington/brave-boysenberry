@@ -26,14 +26,13 @@ state & state::operator = (const state & rhs)
 
 state & state::operator = (const cpp_client::chess::Game & g)
 {
-  std::map<std::string, mypiece>* pieces;
+  std::vector<mypiece*>* pieces;
   for(int i = 0; i < g->pieces.size(); i++)
   {
-   /* if(g->pieces[i]->owner->name == myAI)
-      pieces = &m_fp;
+   if(g->pieces[i]->owner->name == myAI)
+      pieces = &m_friendlyPieces;
     else
-      pieces = &m_ep;
-    */
+      pieces = &m_enemyPieces;
     
     int x = fileToInt(g->pieces[i]->file);
     int y = g->pieces[i]->rank - 1;
@@ -46,26 +45,32 @@ state & state::operator = (const cpp_client::chess::Game & g)
       else
         facing = 1;
       m_pieces[id] = pawn(x, y, facing,id);
+      pieces->push_back(&m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Knight")
     {
       m_pieces[id] = knight(x, y,id);
+      pieces->push_back(&m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Rook")
     {
       m_pieces[id] = rook(x, y,id);
+      pieces->push_back(&m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Bishop")
     {
       m_pieces[id] = bishop(x,y,id);
+      pieces->push_back(&m_pieces[id]);
     }
     else if(g->pieces[i]->type == "King")
     {
       m_pieces[id] = king(x, y,id);
+      pieces->push_back(&m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Queen")
     {
       m_pieces[id] = queen(x, y,id);
+      pieces->push_back(&m_pieces[id]);
     }
   }
   return *this;

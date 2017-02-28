@@ -22,14 +22,14 @@ bool inBounds(const int & i)
   return i >= 0 && i < boardLength;
 }
 
-/*cpp_client::chess::Move actionToMove(const action & a)
+void modifyGame(cpp_client::chess::Player & player, const action & a)
 {
-  cpp_client::chess::Move move;
-  move->from_file = intToFile(a.m_sx);
-  move->from_rank = a.m_sy + 1;
-  move->to_file = intToFile(a.m_ex)
-  move->to_rank = a.m_ey + 1
-  move->piece->id = a.m_id;
-  move->captured->id = a.m_pr;
-  return move;
-}*/
+  for(int i = 0; i < player->pieces.size(); i++)
+  {
+    if(player->pieces[i]->id == a.m_id)
+    {
+      player->pieces[i]->move(intToFile(a.m_ex), a.m_ey + 1);
+      break;
+    }
+  }
+}

@@ -20,5 +20,7 @@ class state
     state operator + (const action & a) const;
   private:
     board m_board;
+    std::vector<mypiece*> m_friendlyPieces;
+    std::vector<mypiece*> m_enemyPieces;
     std::map<std::string, mypiece> m_pieces;
 };

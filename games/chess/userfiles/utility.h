@@ -2,6 +2,10 @@
 #define myAI "Joshua Zygmunt"
 #include <string>
 #include <vector>
+#include "action.h"
+#include "../game.hpp"
+#include "../../../joueur/src/base_ai.hpp"
+#include "../player.hpp"
 struct action;
 
 template <typename T>
@@ -25,4 +29,4 @@ int fileToInt(const char f);
 int fileToInt(const std::string & f);
 bool inBounds(const int & i);
 std::string intToFile(const int & i);
-//cpp_client::chess::Move actionToMove(const action & a);
+void modifyGame(cpp_client::chess::Player & player, const action & a);
