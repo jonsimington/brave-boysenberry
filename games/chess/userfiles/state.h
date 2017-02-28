@@ -1,15 +1,13 @@
 #pragma once
-#include "utility.h"
-#include <vector>
-#include "queen.h"
+#include "../game.hpp"
+#include "../../../joueur/src/base_ai.hpp"
 #include "board.h"
-#include "tile.h"
-#include "pawn.h"
-#include "rook.h"
-#include "bishop.h"
-#include "knight.h"
-#include "king.h"
+#include "action.h"
+#include <vector>
 #include <map>
+
+class action;
+
 class state
 {
   public:

@@ -1,5 +1,5 @@
 #include "pawn.h"
-
+#include "utility.h"
 pawn::pawn(const int & x, const int & y, const bool direction, const std::string & id)
 {
   mypiece(x,y,id);

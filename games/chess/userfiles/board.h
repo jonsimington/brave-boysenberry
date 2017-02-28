@@ -1,9 +1,9 @@
 #pragma once
-#include "mypiece.h"
 #include "tile.h"
+#include "mypiece.h"
 #define boardLength 8
-class mypiece;
 class tile;
+class mypiece;
 
 class board
 {

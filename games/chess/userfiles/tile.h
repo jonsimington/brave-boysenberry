@@ -1,7 +1,7 @@
 #pragma once
 #include "mypiece.h"
-
 class mypiece;
+class board;
 
 class tile
 {

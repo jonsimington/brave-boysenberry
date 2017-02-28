@@ -1,5 +1,7 @@
 #pragma once
 #include"mypiece.h"
+#include"action.h"
+#include<vector>
 class king: public mypiece
 {
   public:

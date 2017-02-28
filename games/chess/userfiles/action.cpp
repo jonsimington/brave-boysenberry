@@ -1,5 +1,5 @@
 #include "action.h"
-
+#include "utility.h"
 action::action(const mypiece & pm, const mypiece & pr)
 {
   m_sx = pm.getX();
@@ -21,10 +21,10 @@ action::action(const mypiece & pm, const int & x, const int & y)
 
 action::action(const cpp_client::chess::Move & move)
 {
-  m_sx = fileToInt(move->from_file);
-  m_sy = move->from_rank - 1;
-  m_ex = fileToInt(move->to_file);
-  m_ey = move->to_rank - 1;
-  m_id = move->piece->id;
-  m_pr = move->captured->id;
+  //m_sx = fileToInt(move->from_file);
+  //m_sy = move->from_rank - 1;
+  //m_ex = fileToInt(move->to_file);
+  //m_ey = move->to_rank - 1;
+  //m_id = move->piece->id;
+  //m_pr = move->captured->id;
 }

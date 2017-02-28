@@ -7,6 +7,7 @@
 #include "move.hpp"
 #include "piece.hpp"
 #include "player.hpp"
+#include "userfiles/state.h"
 
 #include "../../joueur/src/base_ai.hpp"
 #include "../../joueur/src/attr_wrapper.hpp"

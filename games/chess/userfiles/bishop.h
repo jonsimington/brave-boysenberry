@@ -2,6 +2,7 @@
 #include "mypiece.h"
 #include "action.h"
 #include <vector>
+#include <string>
 class bishop: public mypiece
 {
   public:

@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "mypiece.h"
 #include "action.h"
 class rook: public mypiece

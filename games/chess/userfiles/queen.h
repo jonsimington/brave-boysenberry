@@ -1,5 +1,6 @@
 #pragma once
 #include "mypiece.h"
+#include <string>
 class queen: public mypiece
 {
   public:

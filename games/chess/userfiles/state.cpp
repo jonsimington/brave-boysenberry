@@ -1,4 +1,11 @@
 #include "state.h"
+#include "utility.h"
+#include "pawn.h"
+#include "knight.h"
+#include "rook.h"
+#include "bishop.h"
+#include "king.h"
+#include "queen.h"
 state::state()
 {
   
@@ -27,17 +34,18 @@ state & state::operator = (const cpp_client::chess::Game & g)
     else
       pieces = &m_ep;
     */
-    auto x = fileToInt(g->pieces[i]->file);
-    auto y = g->pieces[i]->rank - 1;
-    auto id = g->pieces[i]->id;
+    
+    int x = fileToInt(g->pieces[i]->file);
+    int y = g->pieces[i]->rank - 1;
+    std::string id = g->pieces[i]->id;
     if(g->pieces[i]->type == "Pawn")
     {
       bool facing;
       if(y == 1)
-       facing = 0;
+        facing = 0;
       else
-       facing = 1;
-      (*pieces)[id] = pawn(x, y, facing,id);
+        facing = 1;
+      m_pieces[id] = pawn(x, y, facing,id);
     }
     else if(g->pieces[i]->type == "Knight")
     {
@@ -60,6 +68,7 @@ state & state::operator = (const cpp_client::chess::Game & g)
       m_pieces[id] = queen(x, y,id);
     }
   }
+  return *this;
 }
 
 state::state(const cpp_client::chess::Game & g)

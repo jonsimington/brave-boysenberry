@@ -2,10 +2,9 @@
 // This is where you build your AI
 
 #include "ai.hpp"
-#include "userfiles/state.h"
 #include "userfiles/utility.h"
 #include <ctime>
-//static state currentState;
+static state currentState;
 // You can add #includes here for your AI.
 
 namespace cpp_client
@@ -30,7 +29,7 @@ std::string AI::get_name() const
 /// </summary>
 void AI::start()
 {
-  //currentState = game;
+  currentState = game;
   srand(time(NULL));
 }
 
@@ -58,11 +57,12 @@ void AI::ended(bool won, const std::string& reason)
 /// <returns>Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.</returns>
 bool AI::run_turn()
 {
+  if(game->moves.size() > 0)
+  {
+    action lastMove(game->moves[game->moves.size() - 1]);
+    currentState = currentState + lastMove;
+  }
     // Here is where you'll want to code your AI.
-  std::cout << "start\n";
-  action lastMove(game->moves[game->moves.size() - 1]);
-  std::cout << "end\n";
-  //currentState = currentState + lastMove;
     // We've provided sample code that:
     //    1) prints the board to the console
     //    2) prints the opponent's last move to the console

@@ -1,6 +1,5 @@
 #pragma once
 #include "mypiece.h"
-#include "utility.h"
 #include "../move.cpp"
 #include <string>
 

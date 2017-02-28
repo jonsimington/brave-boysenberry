@@ -1,8 +1,6 @@
 #pragma once
 #include "board.h"
-#include "tile.h"
-#include "action.h"
-#include "utility.h"
+#include <string>
 class board;
 
 class mypiece

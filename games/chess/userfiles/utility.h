@@ -2,12 +2,6 @@
 #define myAI "Joshua Zygmunt"
 #include <string>
 #include <vector>
-#include "../game.hpp"
-#include "../../../joueur/src/base_ai.hpp"
-#include "../player.hpp"
-#include "../piece.hpp"
-#include "../move.hpp"
-#include "action.h"
 struct action;
 
 template <typename T>

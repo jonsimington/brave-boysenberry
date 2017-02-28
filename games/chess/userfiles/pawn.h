@@ -1,6 +1,8 @@
 #pragma once
 #include<vector>
+#include<string>
 #include "mypiece.h"
+#include "action.h"
 class pawn: public mypiece
 {
   public:
