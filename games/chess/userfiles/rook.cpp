@@ -1,8 +1,8 @@
 #include "rook.h"
 #include "board.h"
-rook::rook(const int & x, const int & y)
+rook::rook(const int & x, const int & y, const std::string & id)
 {
-  mypiece(x,y);
+  mypiece(x,y,id);
 }
 
 std::vector<action> rook::possibleActions() const

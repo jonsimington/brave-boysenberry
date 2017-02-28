@@ -5,7 +5,7 @@
 class rook: public mypiece
 {
   public:
-    rook(const int & x, const int & y);
+    rook(const int & x, const int & y, const std::string & id);
     std::vector<action> possibleActions() const;
   private:
 };

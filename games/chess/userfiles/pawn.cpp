@@ -1,8 +1,8 @@
 #include "pawn.h"
 
-pawn::pawn(const int & x, const int & y, const bool direction)
+pawn::pawn(const int & x, const int & y, const bool direction, const std::string & id)
 {
-  mypiece(x,y);
+  mypiece(x,y,id);
   m_direction = true;
 }
 

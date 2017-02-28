@@ -4,7 +4,7 @@
 class pawn: public mypiece
 {
   public:
-    pawn(const int & x, const int & y, const bool direction);
+    pawn(const int & x, const int & y, const bool direction, const std::string & id);
     std::vector<action> possibleActions() const;
     int lookAhead(const int & d) const;
   private:

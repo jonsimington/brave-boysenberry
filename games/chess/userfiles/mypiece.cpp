@@ -2,10 +2,11 @@
 
 mypiece::mypiece(){;}
 
-mypiece::mypiece(const int & x, const int & y)
+mypiece::mypiece(const int & x, const int & y, const std::string & id)
 {
   m_x = x;
   m_y = y;
+  m_id = id;
   m_inUse = true;
   m_hasMoved = false;
 }

@@ -1,7 +1,7 @@
 #include "king.h"
-king::king(const int & x, const int & y)
+king::king(const int & x, const int & y, const std::string & s)
 {
-  mypiece(x,y);
+  mypiece(x,y,s);
 }
 
 std::vector<action> king::possibleActions() const

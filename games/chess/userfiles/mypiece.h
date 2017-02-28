@@ -9,7 +9,7 @@ class mypiece
 {
   public:
     mypiece();
-    mypiece(const int & x, const int & y);
+    mypiece(const int & x, const int & y, const std::string & id);
     void place(const int & x, const int & y);
     bool operator < (const mypiece & rhs) const;
     void move(const int & x, const int & y);

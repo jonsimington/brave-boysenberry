@@ -37,27 +37,27 @@ state::state(const cpp_client::chess::Game & g)
        facing = 0;
       else
        facing = 1;
-      (*pieces)[id] = pawn(x, y, facing);
+      (*pieces)[id] = pawn(x, y, facing,id);
     }
     else if(g->pieces[i]->type == "Knight")
     {
-      m_pieces[id] = knight(x, y);
+      m_pieces[id] = knight(x, y,id);
     }
     else if(g->pieces[i]->type == "Rook")
     {
-      m_pieces[id] = rook(x, y);
+      m_pieces[id] = rook(x, y,id);
     }
     else if(g->pieces[i]->type == "Bishop")
     {
-      m_pieces[id] = bishop(x,y);
+      m_pieces[id] = bishop(x,y,id);
     }
     else if(g->pieces[i]->type == "King")
     {
-      m_pieces[id] = king(x, y);
+      m_pieces[id] = king(x, y,id);
     }
     else if(g->pieces[i]->type == "Queen")
     {
-      m_pieces[id] = queen(x, y);
+      m_pieces[id] = queen(x, y,id);
     }
   }
 }

@@ -1,8 +1,8 @@
 #include "bishop.h"
 
-bishop::bishop(const int & x, const int & y)
+bishop::bishop(const int & x, const int & y, const std::string & s)
 {
-  mypiece(x,y);
+  mypiece(x,y,s);
 }
 
 std::vector<action> bishop::possibleActions() const

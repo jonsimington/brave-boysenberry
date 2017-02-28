@@ -3,6 +3,6 @@
 class knight: public mypiece
 {
   public:
-    knight(const int & x, const int & y);
+    knight(const int & x, const int & y, const std::string & id);
   private:
 };
