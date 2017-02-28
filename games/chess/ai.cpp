@@ -5,6 +5,7 @@
 #include "userfiles/state.h"
 #include "userfiles/utility.h"
 #include <ctime>
+//static state currentState;
 // You can add #includes here for your AI.
 
 namespace cpp_client
@@ -29,8 +30,8 @@ std::string AI::get_name() const
 /// </summary>
 void AI::start()
 {
-    state currentState(cpp_client::chess::Game);
-    srand(time(NULL));
+  //currentState = game;
+  srand(time(NULL));
 }
 
 /// <summary>
@@ -58,7 +59,10 @@ void AI::ended(bool won, const std::string& reason)
 bool AI::run_turn()
 {
     // Here is where you'll want to code your AI.
-
+  std::cout << "start\n";
+  action lastMove(game->moves[game->moves.size() - 1]);
+  std::cout << "end\n";
+  //currentState = currentState + lastMove;
     // We've provided sample code that:
     //    1) prints the board to the console
     //    2) prints the opponent's last move to the console

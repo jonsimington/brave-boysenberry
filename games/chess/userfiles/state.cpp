@@ -17,7 +17,7 @@ state & state::operator = (const state & rhs)
   return *this;
 }
 
-state::state(const cpp_client::chess::Game & g)
+state & state::operator = (const cpp_client::chess::Game & g)
 {
   std::map<std::string, mypiece>* pieces;
   for(int i = 0; i < g->pieces.size(); i++)
@@ -60,6 +60,11 @@ state::state(const cpp_client::chess::Game & g)
       m_pieces[id] = queen(x, y,id);
     }
   }
+}
+
+state::state(const cpp_client::chess::Game & g)
+{
+  *this = g; 
 }
 
 state state::operator + (const action & a) const

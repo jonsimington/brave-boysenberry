@@ -1,5 +1,7 @@
 #pragma once
 #include "mypiece.h"
+#include "utility.h"
+#include "../move.cpp"
 #include <string>
 
 struct action
@@ -7,6 +9,7 @@ struct action
   public:
     action(const mypiece & pm, const mypiece & pr);
     action(const mypiece & pm, const int & x, const int & y);
+    action(const cpp_client::chess::Move & move);
   //private:
     //friend class state;
     std::string m_id; //mypiece id

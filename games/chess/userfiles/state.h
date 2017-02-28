@@ -17,6 +17,7 @@ class state
     state();
     state(const state & rhs);
     state & operator = (const state & rhs);
+    state & operator = (const cpp_client::chess::Game & g);
     state(const cpp_client::chess::Game & g);
     state operator + (const action & a) const;
   private:
