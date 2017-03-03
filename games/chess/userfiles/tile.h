@@ -1,12 +1,11 @@
 #pragma once
 #include "mypiece.h"
 class mypiece;
-class board;
-
 class tile
 {
   public:
     tile();
+    ~tile();
     void release();
     void move(mypiece & p);
     bool occupied() const;

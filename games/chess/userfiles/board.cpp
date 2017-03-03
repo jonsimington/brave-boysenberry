@@ -33,21 +33,13 @@ board::board(const board & rhs)
 const board & board::operator = (const board & rhs)
 {
   for(int i = 0; i < m_length; i++)
-    for(int j = 0; j < m_length; j++)
-      m_data[i][j] = rhs.m_data[i][j];
-  return *this;
-}
-
-board::board(board && rhs)
-{
-  if(m_data != nullptr)
   {
-    for(int i = 0; i < m_length; i++)
-      delete [] m_data[i];
-    delete [] m_data;
+    for(int j = 0; j < m_length; j++)
+    {
+      m_data[i][j] = rhs.m_data[i][j];
+    }
   }
-  m_data = rhs.m_data;
-  rhs.m_data = nullptr;
+  return *this;
 }
 
 const tile* board::operator [] (const int & i) const
@@ -69,5 +61,45 @@ void board::create()
 {
   m_data = new tile*[m_length];
   for(int i = 0; i < m_length; i++)
+  {
     m_data[i] = new tile[m_length];
+  }
+}
+
+void board::reset()
+{
+  for(int i = 0; i < m_length; i++)
+  {
+    for(int j = 0; j < m_length; j++)
+    {
+      m_data[i][j].release();
+    }
+  }
+}
+
+void board::print() const
+{
+  for(int i = m_length - 1; i >= 0; i--)
+  {
+    std::cout << " " << i << "  |";
+    for(int j = 0; j < m_length; j++)
+    {
+      if(!m_data[j][i].occupied())
+      {
+        std::cout << ".";
+      }
+      else
+      {
+        bool friendly = m_data[j][i].getPiece().isFriendly();
+        char type = m_data[j][i].getPiece().getType()[0];
+        if(!friendly)
+        {
+          type += 32;
+        }
+        std::cout << type;
+      }
+      std::cout << "  ";
+    }
+    std::cout << std::endl;
+  }
 }

@@ -1,6 +1,69 @@
 #include "knight.h"
+#include "utility.h"
 
-knight::knight(const int & x, const int & y, const std::string & id)
+knight::knight()
 {
-  mypiece(x,y,id);
+  
+}
+
+knight::knight(const int & x, const int & y, const std::string & id, board & b, bool friendly): mypiece(x,y,id,b,friendly)
+{
+  m_type = "Knight";
+}
+
+knight* knight::clone() const
+{
+  knight* p = new knight;
+  p->copyValues(this);
+  return p;
+}
+
+std::vector<action> knight::possibleActions() const
+{
+  std::vector<action> allActions;
+  if(m_y + 2 < boardLength)
+  {
+    if(m_x + 1 < boardLength)
+    {
+      checkToPlace(this, *m_board, m_x + 1, m_y + 2, allActions);
+    }
+    if(m_x - 1 >= 0)
+    {
+      checkToPlace(this, *m_board, m_x - 1, m_y + 2, allActions);
+    }
+  }
+  if(m_y - 2 >= boardLength)
+  {
+    if(m_x + 1 < boardLength)
+    {
+      checkToPlace(this, *m_board, m_x + 1, m_y - 2, allActions);
+    }
+    if(m_x - 1 >= 0)
+    {
+      checkToPlace(this, *m_board, m_x - 1, m_y - 2, allActions);
+    }
+  }
+  if(m_x + 2 < boardLength)
+  {
+    if(m_y + 1 < boardLength)
+    {
+      checkToPlace(this, *m_board, m_x + 2, m_y + 1, allActions);
+    }
+    if(m_y - 1 >= 0)
+    {
+      checkToPlace(this, *m_board, m_x + 2, m_y - 1, allActions);
+    }
+  }
+  if(m_x - 2 >= 0)
+  {
+    if(m_y + 1 < boardLength)
+    {
+      checkToPlace(this, *m_board, m_x - 2, m_y + 1, allActions);
+    }
+    if(m_y - 1 >= 0)
+    {
+      checkToPlace(this, *m_board, m_x - 2, m_y - 1, allActions);
+    }
+  }
+  return allActions;
 }

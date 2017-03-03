@@ -6,7 +6,9 @@
 class rook: public mypiece
 {
   public:
-    rook(const int & x, const int & y, const std::string & id);
-    std::vector<action> possibleActions() const;
+    rook();
+    rook(const int & x, const int & y, const std::string & s, board & b, bool friendly);
+    virtual std::vector<action> possibleActions() const;
+    virtual rook* clone() const;
   private:
 };

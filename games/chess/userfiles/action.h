@@ -3,14 +3,14 @@
 #include "../move.cpp"
 #include <string>
 
+class mypiece;
 struct action
 {
   public:
     action(const mypiece & pm, const mypiece & pr);
     action(const mypiece & pm, const int & x, const int & y);
     action(const cpp_client::chess::Move & move);
-  //private:
-    //friend class state;
+    
     std::string m_id; //mypiece id
     std::string m_pr; //mypiece id of mypiece removed
     int m_sx;

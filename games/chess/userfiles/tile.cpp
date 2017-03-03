@@ -4,6 +4,11 @@ tile::tile()
   m_mypiece = nullptr;
 }
 
+tile::~tile()
+{
+  m_mypiece = nullptr;
+}
+
 void tile::release()
 {
   m_mypiece = nullptr;

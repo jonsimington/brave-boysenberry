@@ -1,54 +1,31 @@
 #include "bishop.h"
+#include "utility.h"
 
-bishop::bishop(const int & x, const int & y, const std::string & s)
+bishop::bishop()
 {
-  mypiece(x,y,s);
+  
+}
+
+bishop::bishop(const int & x, const int & y, const std::string & id, board & b, bool friendly): mypiece(x,y,id,b,friendly)
+{
+  m_type = "Bishop";
+}
+
+bishop::bishop(const int & x, const int & y, const std::string & id): mypiece(x,y,id)
+{
+  
 }
 
 std::vector<action> bishop::possibleActions() const
 {
   std::vector<action> allActions;
-  int x, y;
-  for(x = m_x + 1, y = m_y + 1; x < boardLength && y < boardLength; x++, y++) //top right
-  {
-    if((*m_board)[x][y].occupied())
-    {
-      allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
-      break;
-    }
-    else
-      allActions.push_back(action(*this, x, y));
-  }
-  for(x = m_x - 1, y = m_y + 1; x >= 0 && y < boardLength; x--, y++) //top left
-  {
-    if((*m_board)[x][y].occupied())
-    {
-      allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
-      break;
-    }
-    else
-      allActions.push_back(action(*this, x, y));
-  }
-  for(x = m_x - 1, y = m_y - 1; x >= 0 && y >= 0; x--, y--) //top left
-  {
-    if((*m_board)[x][y].occupied())
-    {
-      allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
-      break;
-    }
-    else
-      allActions.push_back(action(*this, x, y));
-  }
-  for(x = m_x + 1, y = m_y - 1; x < boardLength && y >= 0; x++, y--) //top left
-  {
-    if((*m_board)[x][y].occupied())
-    {
-      allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
-      break;
-    }
-    else
-      allActions.push_back(action(*this, x, y));
-  }
-  
+  diagonalMoves(this, *m_board, allActions);
   return allActions;
+}
+
+bishop* bishop::clone() const
+{
+  bishop* p = new bishop;
+  p->copyValues(this);
+  return p;
 }

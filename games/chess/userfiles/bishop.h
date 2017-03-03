@@ -6,7 +6,10 @@
 class bishop: public mypiece
 {
   public:
-    bishop(const int & x, const int & y, const std::string & s);
-    std::vector<action> possibleActions() const;
+    bishop();
+    bishop(const int & x, const int & y, const std::string & id);
+    bishop(const int & x, const int & y, const std::string & id, board & b, bool friendly);
+    virtual std::vector<action> possibleActions() const;
+    virtual bishop* clone() const;
   private:
 };
