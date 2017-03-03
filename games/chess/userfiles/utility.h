@@ -10,6 +10,8 @@
 struct action;
 class state;
 
+static std::vector<std::string> upgrade_types = {"Queen", "Bishop", "Rook", "Knight"};
+
 template <typename T>
 std::vector<T> operator + (const std::vector<T> & lhs, const std::vector<T> & rhs)
 {
@@ -35,3 +37,4 @@ bool checkToPlace(const mypiece* p, const board & theBoard, const int & x, const
 void diagonalMoves(const mypiece* p, const board & theBoard, std::vector<action> & allActions);
 void straightMoves(const mypiece* p, const board & theBoard, std::vector<action> & allActions);
 bool inCheck(const state & s, const std::vector<mypiece*> & pieces);
+mypiece* changeType(state & s, mypiece* p, const std::string & typeTo);

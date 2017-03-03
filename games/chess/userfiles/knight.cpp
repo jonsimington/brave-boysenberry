@@ -33,7 +33,7 @@ std::vector<action> knight::possibleActions() const
       checkToPlace(this, *m_board, m_x - 1, m_y + 2, allActions);
     }
   }
-  if(m_y - 2 >= boardLength)
+  if(m_y - 2 >= 0)
   {
     if(m_x + 1 < boardLength)
     {

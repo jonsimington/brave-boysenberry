@@ -20,16 +20,50 @@ std::vector<action> pawn::possibleActions() const
   int y = lookAhead(1);
   if(!(*m_board)[m_x][y].occupied())
   {
-    allActions.push_back(action(*this, m_x, y));
-    aheadOccupied = false;
+    if(y == 0 || y == boardLength - 1)
+    {
+      for(auto s: upgrade_types)
+      {
+        allActions.push_back(action(*this, m_x, y, s));
+      }
+    }
+    else
+    {
+      allActions.push_back(action(*this, m_x, y));
+      aheadOccupied = false;
+    }
   }
   else
     aheadOccupied = true;
   if(inBounds(x) && (*m_board)[x][y].occupied() && (*m_board)[x][y].getPiece().isFriendly() != m_friendly)
-    allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
+  {
+    if(y == 0 || y == boardLength - 1)
+    {
+      for(auto s: upgrade_types)
+      {
+        allActions.push_back(action(*this, (*m_board)[x][y].getPiece(), s));
+      }
+    }
+    else
+    {
+      allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
+    }
+  }
   x = m_x + 1;
   if(inBounds(x) && (*m_board)[x][y].occupied() && (*m_board)[x][y].getPiece().isFriendly() != m_friendly)
-    allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
+  {
+    if(y == 0 || y == boardLength - 1)
+    {
+      for(auto s: upgrade_types)
+      {
+        allActions.push_back(action(*this, (*m_board)[x][y].getPiece(), s));
+      }
+    }
+    else
+    {
+      allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
+    }
+  }
   if(!aheadOccupied && !m_hasMoved)
   {
     y = lookAhead(2);

@@ -121,6 +121,10 @@ state state::operator + (const action & a) const
 {
   //std::cout << "+ operator action start" << std::endl;
   state result(*this);
+  if(a.m_promoteType != "")
+  {
+    changeType(result, result.m_pieces[a.m_id], a.m_promoteType);
+  }
   auto it = result.m_pieces.find(a.m_id);
   if(a.m_pr != "")
   {

@@ -1,5 +1,11 @@
 #include "utility.h"
 #include "board.h"
+#include "queen.h"
+#include "rook.h"
+#include "bishop.h"
+#include "pawn.h"
+#include "knight.h"
+
 int fileToInt(const char f)
 {
   return f - 'a';  
@@ -28,7 +34,7 @@ void modifyGame(cpp_client::chess::Player & player, const action & a)
   {
     if(player->pieces[i]->id == a.m_id)
     {
-      player->pieces[i]->move(intToFile(a.m_ex), a.m_ey + 1);
+      player->pieces[i]->move(intToFile(a.m_ex), a.m_ey + 1, a.m_promoteType);
       break;
     }
   }
@@ -148,4 +154,42 @@ bool inCheck(const state & s, const std::vector<mypiece*> & pieces)
   }
   //std::cout << "leave" << std::endl;
   return false;
+}
+
+mypiece* changeType(state & s, mypiece* p, const std::string & typeTo)
+{
+  mypiece* newpiece;
+  std::vector<mypiece*>* pieces;
+  if(typeTo == "Queen")
+  {
+    newpiece = new queen;
+  }
+  else if(typeTo == "Knight")
+  {
+    newpiece = new knight;
+  }
+  else if(typeTo == "Rook")
+  {
+    newpiece = new rook;
+  }
+  else if(typeTo == "Bishop")
+  {
+    newpiece = new bishop;
+  }
+  newpiece->copyValues(p);
+  delete s.m_pieces[newpiece->getId()];
+  s.m_pieces[newpiece->getId()] = newpiece;
+  if(newpiece->isFriendly())
+    pieces = &s.m_friendlyPieces;
+  else
+    pieces = &s.m_enemyPieces;
+  for(int i = 0; i < pieces->size(); i++)
+  {
+    if((*pieces)[i]->getId() == newpiece->getId())
+    {
+      (*pieces)[i] = newpiece;
+      break;
+    }
+  }
+  return newpiece;
 }
