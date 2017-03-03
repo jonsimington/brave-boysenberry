@@ -9,7 +9,7 @@ mypiece::mypiece(const int & x, const int & y, const std::string & id)
   m_id = id;
 }
 
-mypiece::mypiece(const int & x, const int & y, const std::string & id, board & b, bool friendly)
+mypiece::mypiece(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved)
 {
   m_friendly = friendly;
   m_x = x;
@@ -18,7 +18,7 @@ mypiece::mypiece(const int & x, const int & y, const std::string & id, board & b
   m_board = &b;
   (*m_board)[x][y].move(*this); 
   m_inUse = true;
-  m_hasMoved = false;
+  m_hasMoved = hasMoved;
 }
 
 void mypiece::place(const int & x, const int & y)

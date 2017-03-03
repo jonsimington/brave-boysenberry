@@ -5,7 +5,8 @@ rook::rook()
   
 }
 
-rook::rook(const int & x, const int & y, const std::string & id, board & b, bool friendly): mypiece(x,y,id,b,friendly)
+rook::rook(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved): 
+mypiece(x,y,id,b,friendly,hasMoved)
 {
   m_type = "Rook";
 }

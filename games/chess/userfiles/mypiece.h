@@ -11,7 +11,7 @@ class mypiece
   public:
     mypiece();
     mypiece(const int & x, const int & y, const std::string & id);
-    mypiece(const int & x, const int & y, const std::string & id, board & b, bool friendly);
+    mypiece(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved);
     void place(const int & x, const int & y);
     bool operator < (const mypiece & rhs) const;
     void move(const int & x, const int & y);

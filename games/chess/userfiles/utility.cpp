@@ -124,15 +124,25 @@ void straightMoves(const mypiece* p, const board & theBoard, std::vector<action>
   }
 }
 
-bool inCheck(const state & s)
+bool inCheck(const state & s, const std::vector<mypiece*> & pieces)
 {
   //std::cout << "enter" << std::endl;
-  auto allActions = s.possibleActionsE();
+  std::vector<action> allActions;
+  for(int i = 0; i < pieces.size(); i++)
+  {
+    if(pieces[i]->inUse())
+    {
+      allActions += pieces[i]->possibleActions();
+    }
+  }
   for(auto it = allActions.begin(); it != allActions.end(); it++)
   {
     if(it->m_pr != "" && s.m_pieces.find(it->m_pr)->second->getType() == "King")
     {
-      //std::cout << "leave!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+      //s.m_board.print();
+      //std::cout << "action that kills is: " <<  it->m_sx << ", ";
+      //std::cout << it->m_sy << " to ";
+      //std::cout << it->m_ex << ", " << it->m_ey << std::endl;  
       return true;
     }
   }

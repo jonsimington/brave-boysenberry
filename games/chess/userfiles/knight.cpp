@@ -6,7 +6,8 @@ knight::knight()
   
 }
 
-knight::knight(const int & x, const int & y, const std::string & id, board & b, bool friendly): mypiece(x,y,id,b,friendly)
+knight::knight(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved): 
+mypiece(x,y,id,b,friendly, hasMoved)
 {
   m_type = "Knight";
 }

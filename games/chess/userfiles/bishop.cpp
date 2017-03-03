@@ -6,7 +6,8 @@ bishop::bishop()
   
 }
 
-bishop::bishop(const int & x, const int & y, const std::string & id, board & b, bool friendly): mypiece(x,y,id,b,friendly)
+bishop::bishop(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved): 
+mypiece(x,y,id,b,friendly,hasMoved)
 {
   m_type = "Bishop";
 }

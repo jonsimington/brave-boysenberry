@@ -34,4 +34,4 @@ void modifyGame(cpp_client::chess::Player & player, const action & a);
 bool checkToPlace(const mypiece* p, const board & theBoard, const int & x, const int & y, std::vector<action> & actions);
 void diagonalMoves(const mypiece* p, const board & theBoard, std::vector<action> & allActions);
 void straightMoves(const mypiece* p, const board & theBoard, std::vector<action> & allActions);
-bool inCheck(const state & s);
+bool inCheck(const state & s, const std::vector<mypiece*> & pieces);

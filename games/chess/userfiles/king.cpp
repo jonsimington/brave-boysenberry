@@ -5,7 +5,8 @@ king::king()
   
 }
 
-king::king(const int & x, const int & y, const std::string & id, board & b, bool friendly): mypiece(x,y,id,b,friendly)
+king::king(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved): 
+mypiece(x,y,id,b,friendly, hasMoved)
 {
   m_type = "King";
 }
@@ -15,6 +16,7 @@ std::vector<action> king::possibleActions() const
   std::vector<action> allActions;
   if(inBounds(m_y + 1))
   {
+    checkToPlace(this,*m_board, m_x, m_y + 1,allActions);
     if(inBounds(m_x + 1))
     {
       checkToPlace(this,*m_board, m_x + 1, m_y + 1,allActions);

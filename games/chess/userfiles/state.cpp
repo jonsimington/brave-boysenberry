@@ -71,6 +71,7 @@ state & state::operator = (const cpp_client::chess::Game & g)
     int x = fileToInt(g->pieces[i]->file);
     int y = g->pieces[i]->rank - 1;
     std::string id = g->pieces[i]->id;
+    bool hasMoved = g->pieces[i]->has_moved;
     if(g->pieces[i]->type == "Pawn")
     {
       bool facing;
@@ -78,32 +79,32 @@ state & state::operator = (const cpp_client::chess::Game & g)
         facing = 0;
       else
         facing = 1;
-      m_pieces[id] = new pawn(x, y, facing,id,m_board,friendly);
+      m_pieces[id] = new pawn(x, y, facing,id,m_board,friendly,hasMoved);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Knight")
     {
-      m_pieces[id] = new knight(x, y,id,m_board,friendly);
+      m_pieces[id] = new knight(x, y,id,m_board,friendly,hasMoved);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Rook")
     {
-      m_pieces[id] = new rook(x, y,id,m_board,friendly);
+      m_pieces[id] = new rook(x, y,id,m_board,friendly,hasMoved);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Bishop")
     {
-      m_pieces[id] = new bishop(x,y,id,m_board,friendly);
+      m_pieces[id] = new bishop(x,y,id,m_board,friendly,hasMoved);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "King")
     {
-      m_pieces[id] = new king(x, y,id,m_board,friendly);
+      m_pieces[id] = new king(x, y,id,m_board,friendly,hasMoved);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Queen")
     {
-      m_pieces[id] = new queen(x, y,id,m_board,friendly);
+      m_pieces[id] = new queen(x, y,id,m_board,friendly,hasMoved);
       pieces->push_back(m_pieces[id]);
     }
   }
@@ -147,9 +148,12 @@ std::vector<action> state::possibleActionsF() const
   }
   for(int i = 0; i < allActions.size();)
   {
-    auto s = *this + allActions[i];
-    if(inCheck(s))
+    state s = *this + allActions[i];
+    if(inCheck(s, s.m_enemyPieces))
     {
+      //std::cout << "removing: " <<  allActions[i].m_sx << ", ";
+      //std::cout << allActions[i].m_sy << " to ";
+      //std::cout << allActions[i].m_ex << ", " << allActions[i].m_ey << std::endl;      
       allActions.erase(allActions.begin() + i);
     }
     else

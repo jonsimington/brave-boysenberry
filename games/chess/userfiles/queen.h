@@ -7,7 +7,7 @@ class queen: public mypiece
 {
   public:
     queen();
-    queen(const int & x, const int & y, const std::string & id, board & b, bool friendly);
+    queen(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved);
     virtual queen* clone() const;
     virtual std::vector<action> possibleActions() const;
   private:

@@ -5,7 +5,8 @@ pawn::pawn()
   
 }
 
-pawn::pawn(const int & x, const int & y, const bool direction, const std::string & id, board & b, bool friendly): mypiece(x,y,id,b,friendly)
+pawn::pawn(const int & x, const int & y, const bool direction, const std::string & id, board & b, bool friendly, bool hasMoved):
+mypiece(x,y,id,b,friendly, hasMoved)
 {
   m_type = "Pawn";
   m_direction = direction;
