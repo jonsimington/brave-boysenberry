@@ -75,10 +75,14 @@ state & state::operator = (const cpp_client::chess::Game & g)
     if(g->pieces[i]->type == "Pawn")
     {
       bool facing;
-      if(y == 1)
+      if(g->pieces[i]->owner->color == "White")
+      {
         facing = 0;
+      }
       else
+      {
         facing = 1;
+      }
       m_pieces[id] = new pawn(x, y, facing,id,m_board,friendly,hasMoved);
       pieces->push_back(m_pieces[id]);
     }

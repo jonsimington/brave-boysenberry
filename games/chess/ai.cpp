@@ -76,7 +76,7 @@ bool AI::run_turn()
     currentState = currentState + lastMove;
     //std::cout << "state updated" << std::endl;
   }
-  currentState.m_board.print();
+  //currentState.m_board.print();
   auto allActions = currentState.possibleActionsF();
   std::cout << "number of possible actions: " << allActions.size() << std::endl;
   auto theAction = allActions[rand() % allActions.size()];
