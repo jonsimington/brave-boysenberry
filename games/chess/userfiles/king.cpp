@@ -14,37 +14,47 @@ mypiece(x,y,id,b,friendly, hasMoved)
 std::vector<action> king::possibleActions() const
 {
   std::vector<action> allActions;
-  if(inBounds(m_y + 1))
+  if(m_y + 1 < boardLength)
   {
     checkToPlace(this,*m_board, m_x, m_y + 1,allActions);
-    if(inBounds(m_x + 1))
+    if(m_x + 1 < boardLength)
     {
       checkToPlace(this,*m_board, m_x + 1, m_y + 1,allActions);
     }
-    if(inBounds(m_x - 1))
+    if(m_x - 1 >= 0)
     {
       checkToPlace(this,*m_board, m_x - 1, m_y + 1,allActions);
     }
   }
-  if(inBounds(m_y - 1))
+  if(m_y - 1 >= 0)
   {
     checkToPlace(this,*m_board, m_x, m_y - 1,allActions);
-    if(inBounds(m_x + 1))
+    if(m_x + 1 < boardLength)
     {
       checkToPlace(this,*m_board, m_x + 1, m_y - 1,allActions);
     }
-    if(inBounds(m_x - 1))
+    if(m_x - 1 >= 0)
     {
       checkToPlace(this,*m_board, m_x - 1, m_y - 1,allActions);
     }
   }
-  if(inBounds(m_x + 1))
+  if(m_x + 1 < boardLength)
   {
     checkToPlace(this,*m_board, m_x + 1, m_y, allActions);
   }
-  if(inBounds(m_x - 1))
+  if(m_x - 1 >= 0)
   {
     checkToPlace(this,*m_board, m_x - 1, m_y, allActions);
+  }
+  if(!m_hasMoved && (*m_board)[0][m_y].occupied() && (*m_board)[0][m_y].getPiece().getType() == "Rook" && 
+     !(*m_board)[0][m_y].getPiece().m_hasMoved && isClearHorizontal(0, m_x - 1, m_y, *m_board))
+  {
+    allActions.push_back(action(*this, m_x - 2, m_y));
+  }
+  if(!m_hasMoved && (*m_board)[boardLength - 1][m_y].occupied() && (*m_board)[boardLength - 1][m_y].getPiece().getType() == "Rook" && 
+     !(*m_board)[boardLength - 1][m_y].getPiece().m_hasMoved && isClearHorizontal(m_x + 1, boardLength - 2, m_y, *m_board))
+  {
+    allActions.push_back(action(*this, m_x + 2, m_y));
   }
   return allActions;
 }

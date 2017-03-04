@@ -10,6 +10,7 @@ class tile
     void move(mypiece & p);
     bool occupied() const;
     const mypiece & getPiece() const;
+    mypiece* getPieceRef();
   private:
     mypiece* m_mypiece;
 };

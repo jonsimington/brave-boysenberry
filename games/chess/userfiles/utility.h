@@ -24,7 +24,8 @@ std::vector<T> operator + (const std::vector<T> & lhs, const std::vector<T> & rh
 template <typename T>
 std::vector<T> & operator += (std::vector<T> & lhs, const std::vector<T> & rhs)
 {
-  lhs = lhs + rhs;
+  for(int i = 0; i < rhs.size(); i++)
+    lhs.push_back(rhs[i]);
   return lhs;
 }
 
@@ -38,3 +39,4 @@ void diagonalMoves(const mypiece* p, const board & theBoard, std::vector<action>
 void straightMoves(const mypiece* p, const board & theBoard, std::vector<action> & allActions);
 bool inCheck(const state & s, const std::vector<mypiece*> & pieces);
 mypiece* changeType(state & s, mypiece* p, const std::string & typeTo);
+bool isClearHorizontal(const int & x1, const int & x2, const int & y, const board & theBoard);

@@ -30,3 +30,8 @@ const mypiece & tile::getPiece() const
 {
   return *m_mypiece;
 }
+
+mypiece* tile::getPieceRef()
+{
+  return m_mypiece;
+} 

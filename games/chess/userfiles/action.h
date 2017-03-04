@@ -19,4 +19,5 @@ struct action
     int m_ex;
     int m_ey;
     bool firstMove;
+    bool m_enPassant;
 };

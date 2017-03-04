@@ -193,3 +193,13 @@ mypiece* changeType(state & s, mypiece* p, const std::string & typeTo)
   }
   return newpiece;
 }
+
+bool isClearHorizontal(const int & x1, const int & x2, const int & y, const board & theBoard)
+{
+  for(int i = x1; i <= x2; i++)
+  {
+    if(theBoard[i][y].occupied())
+      return false;
+  }
+  return true;
+}

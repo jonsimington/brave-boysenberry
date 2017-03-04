@@ -14,4 +14,5 @@ class pawn: public mypiece
   private:
     /*0 is forward 1 is backwards */
     bool m_direction;
+    bool m_enPassant;
 };

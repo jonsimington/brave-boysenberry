@@ -6,6 +6,7 @@
 #include "bishop.h"
 #include "king.h"
 #include "queen.h"
+#include <cmath>
 state::state()
 {
   std::cout << "state created\n" << std::endl;
@@ -139,6 +140,24 @@ state state::operator + (const action & a) const
   it->second->move(a.m_ex, a.m_ey);
   result.m_board[a.m_ex][a.m_ey].move(*(it->second));
   it->second->m_hasMoved = true;
+  if(it->second->getType() == "King" && std::abs(a.m_ex - a.m_sx) == 2)
+  {
+    mypiece* rook;
+    int newx;
+    if(a.m_ex - a.m_sx > 0)
+    {
+      rook = result.m_board[boardLength - 1][a.m_sy].getPieceRef();
+      newx = a.m_ex - 1;
+    }
+    else
+    {
+      rook = result.m_board[0][a.m_sy].getPieceRef();
+      newx = a.m_ex + 1;
+    }
+    result.m_board[rook->getX()][rook->getY()].release();
+    rook->m_hasMoved = true;
+    result.m_board[newx][a.m_sy].move(*rook);
+  }
   //std::cout << "+ operator action end" << std::endl;
   return result;
 }
