@@ -9,8 +9,10 @@ struct action
   public:
     action(const mypiece & pm, const mypiece & pr, const std::string promoteType = "");
     action(const mypiece & pm, const int & x, const int & y, const std::string promoteType = "");
+    action(const mypiece & pm, const mypiece & pr, bool enPassant);
     action(const cpp_client::chess::Move & move);
-    
+    bool operator == (const action & rhs) const;
+    bool operator != (const action & rhs) const;
     std::string m_id; //mypiece id
     std::string m_pr; //mypiece id of mypiece removed
     std::string m_promoteType;
@@ -18,6 +20,5 @@ struct action
     int m_sy;
     int m_ex;
     int m_ey;
-    bool firstMove;
     bool m_enPassant;
 };

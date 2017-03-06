@@ -17,7 +17,7 @@ bishop::bishop(const int & x, const int & y, const std::string & id): mypiece(x,
   
 }
 
-std::vector<action> bishop::possibleActions() const
+std::vector<action> bishop::possibleActions(const int & px, const int & py, const bool cp) const
 {
   std::vector<action> allActions;
   diagonalMoves(this, *m_board, allActions);

@@ -11,7 +11,7 @@ mypiece(x,y,id,b,friendly,hasMoved)
   m_type = "Rook";
 }
 
-std::vector<action> rook::possibleActions() const
+std::vector<action> rook::possibleActions(const int & px, const int & py, const bool cp) const
 {
   std::vector<action> allActions;
   straightMoves(this, *m_board, allActions);

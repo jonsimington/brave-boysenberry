@@ -43,7 +43,7 @@ void mypiece::remove()
   m_inUse = false;
 }
 
-std::vector <action> mypiece::possibleActions() const
+std::vector <action> mypiece::possibleActions(const int & px, const int & py, const bool cp) const
 {
   return std::vector<action>();
 }
@@ -88,4 +88,9 @@ bool mypiece::inUse() const
 std::string mypiece::getType() const
 {
   return m_type;
+}
+
+int mypiece::getDirection() const
+{
+  return -1;
 }

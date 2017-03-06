@@ -12,7 +12,7 @@ mypiece(x,y,id,b,friendly, hasMoved)
   m_direction = direction;
 }
 
-std::vector<action> pawn::possibleActions() const
+std::vector<action> pawn::possibleActions(const int & px, const int & py, const bool cp) const
 {
   bool aheadOccupied;
   std::vector<action> allActions;
@@ -64,6 +64,14 @@ std::vector<action> pawn::possibleActions() const
       allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
     }
   }
+  if(cp && m_x - 1 >= 0 && px == m_x - 1 && py == y && (*m_board)[m_x - 1][m_y].occupied() && (*m_board)[m_x - 1][m_y].getPiece().isFriendly() != m_friendly)
+  {
+    allActions.push_back(action(*this, (*m_board)[m_x - 1][m_y].getPiece(), 1));  
+  }
+  if(cp && m_x + 1 < boardLength &&  px == m_x + 1 && py == y && (*m_board)[m_x + 1][m_y].occupied() && (*m_board)[m_x + 1][m_y].getPiece().isFriendly() != m_friendly)
+  {
+    allActions.push_back(action(*this, (*m_board)[m_x + 1][m_y].getPiece(), 1));  
+  }
   if(!aheadOccupied && !m_hasMoved)
   {
     y = lookAhead(2);
@@ -89,4 +97,9 @@ pawn* pawn::clone() const
   p->copyValues(this);
   p->m_direction = m_direction;
   return p;
+}
+
+int pawn::getDirection() const
+{
+  return m_direction;
 }

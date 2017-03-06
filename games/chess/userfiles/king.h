@@ -6,7 +6,7 @@ class king: public mypiece
 {
   public:
     king();
-    virtual std::vector<action> possibleActions() const;
+    virtual std::vector<action> possibleActions(const int & px, const int & py, const bool cp) const;
     king(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved);
     virtual king* clone() const;
   private:

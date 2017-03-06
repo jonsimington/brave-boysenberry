@@ -24,8 +24,12 @@ class state
     void deleteData();
     
     std::string m_id;
-    board m_board;
+    board m_board; //the board
     std::vector<mypiece*> m_friendlyPieces;
     std::vector<mypiece*> m_enemyPieces;
     std::map<std::string, mypiece*> m_pieces;
+    bool inCheck() const;
+    int px; //enpassant target cordinates
+    int py; //enpassant target cordinates
+    bool can_EnPassant; //is enpassant possible
 };

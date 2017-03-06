@@ -7,9 +7,10 @@
 #include "king.h"
 #include "queen.h"
 #include <cmath>
+#include <sstream>
 state::state()
 {
-  std::cout << "state created\n" << std::endl;
+  can_EnPassant = false;
 }
 
 state::state(const state & rhs)
@@ -24,10 +25,8 @@ state::~state()
 
 state & state::operator = (const state & rhs)
 {
-  //std::cout << "= operator state start" << std::endl;
   m_board.reset();
   deleteData();
-  //std::cout << rhs.m_pieces.size() << std::endl;
   for(auto it = rhs.m_pieces.begin(); it != rhs.m_pieces.end(); it++)
   {
     auto p = m_pieces[it->first] = it->second->clone();
@@ -46,13 +45,14 @@ state & state::operator = (const state & rhs)
     }
   }
   m_id = rhs.m_id;
-  //std::cout << "= operator state end" << std::endl;
+  px = rhs.px;
+  py = rhs.py;
+  can_EnPassant = rhs.can_EnPassant;
   return *this;
 }
 
 state & state::operator = (const cpp_client::chess::Game & g)
 {
-  //std::cout << "= operator game start" << std::endl;;
   m_board.reset();
   deleteData();
   std::vector<mypiece*>* pieces;
@@ -79,41 +79,98 @@ state & state::operator = (const cpp_client::chess::Game & g)
       if(g->pieces[i]->owner->color == "White")
       {
         facing = 0;
+        if(y == 1)
+        {
+          hasMoved = false;
+        }
+        else
+        {
+          hasMoved = true;
+        }
       }
       else
       {
         facing = 1;
+        if(y == 6)
+        {
+          hasMoved = false;
+        }
+        else
+        {
+          hasMoved = true;
+        }
       }
       m_pieces[id] = new pawn(x, y, facing,id,m_board,friendly,hasMoved);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Knight")
     {
-      m_pieces[id] = new knight(x, y,id,m_board,friendly,hasMoved);
+      m_pieces[id] = new knight(x, y,id,m_board,friendly,true);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Rook")
     {
-      m_pieces[id] = new rook(x, y,id,m_board,friendly,hasMoved);
+      m_pieces[id] = new rook(x, y,id,m_board,friendly,true);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Bishop")
     {
-      m_pieces[id] = new bishop(x,y,id,m_board,friendly,hasMoved);
+      m_pieces[id] = new bishop(x,y,id,m_board,friendly,true);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "King")
     {
-      m_pieces[id] = new king(x, y,id,m_board,friendly,hasMoved);
+      m_pieces[id] = new king(x, y,id,m_board,friendly,true);
       pieces->push_back(m_pieces[id]);
     }
     else if(g->pieces[i]->type == "Queen")
     {
-      m_pieces[id] = new queen(x, y,id,m_board,friendly,hasMoved);
+      m_pieces[id] = new queen(x, y,id,m_board,friendly,true);
       pieces->push_back(m_pieces[id]);
     }
   }
-  //std::cout << "= operator game end" << std::endl;
+  std::istringstream stringstream(g->fen);
+  std::string code;
+  stringstream >> code;
+  stringstream >> code;
+  stringstream >> code;
+  if(code != "-")
+  {
+    for(int i = 0; i < code.size(); i++)
+    {
+      if(code[i] == 'K')
+      {
+        m_board[4][0].getPieceRef()->m_hasMoved = false;
+        m_board[7][0].getPieceRef()->m_hasMoved = false;
+      }
+      else if(code[i] == 'Q')
+      {
+        m_board[4][0].getPieceRef()->m_hasMoved = false;
+        m_board[0][0].getPieceRef()->m_hasMoved = false;
+      }
+      else if(code[i] == 'k')
+      {
+        m_board[4][7].getPieceRef()->m_hasMoved = false;
+        m_board[7][7].getPieceRef()->m_hasMoved = false;
+      }
+      else if(code[i] == 'q')
+      {
+        m_board[4][7].getPieceRef()->m_hasMoved = false;
+        m_board[0][7].getPieceRef()->m_hasMoved = false;
+      }
+    }
+  }
+  stringstream >> code;
+  if(code != "-")
+  {
+    px = fileToInt(code[0]);
+    py = code[1] - '1';
+    can_EnPassant = true;
+  }
+  else
+  {
+    can_EnPassant = false;
+  }
   return *this;
 }
 
@@ -124,7 +181,6 @@ state::state(const cpp_client::chess::Game & g)
 
 state state::operator + (const action & a) const
 {
-  //std::cout << "+ operator action start" << std::endl;
   state result(*this);
   if(a.m_promoteType != "")
   {
@@ -140,6 +196,19 @@ state state::operator + (const action & a) const
   it->second->move(a.m_ex, a.m_ey);
   result.m_board[a.m_ex][a.m_ey].move(*(it->second));
   it->second->m_hasMoved = true;
+  if(it->second->getType() == "Pawn" && std::abs(a.m_ey - a.m_sy) == 2)
+  {
+    result.can_EnPassant = true;
+    result.px = a.m_ex;
+    if(it->second->getDirection())
+      result.py = a.m_ey - 1;
+    else
+      result.py = a.m_ey + 1;
+  }
+  else
+  {
+    result.can_EnPassant = false;
+  }
   if(it->second->getType() == "King" && std::abs(a.m_ex - a.m_sx) == 2)
   {
     mypiece* rook;
@@ -156,31 +225,33 @@ state state::operator + (const action & a) const
     }
     result.m_board[rook->getX()][rook->getY()].release();
     rook->m_hasMoved = true;
+    rook->move(newx, a.m_sy);
     result.m_board[newx][a.m_sy].move(*rook);
   }
-  //std::cout << "+ operator action end" << std::endl;
   return result;
 }
 
 std::vector<action> state::possibleActionsF() const
 {
   std::vector<action> allActions;
-  //std::cout << "number of friendly pieces: " << m_friendlyPieces.size() << std::endl;
+  std::string kingId;
+  in_check = inCheck();
   for(int i = 0; i < m_friendlyPieces.size(); i++)
   {
     if(m_friendlyPieces[i]->inUse())
     {
-      allActions += m_friendlyPieces[i]->possibleActions();
+      allActions += m_friendlyPieces[i]->possibleActions(px,py,can_EnPassant);
+    }
+    if(m_friendlyPieces[i]->getType() == "King")
+    {
+      kingId = m_friendlyPieces[i]->getId();
     }
   }
   for(int i = 0; i < allActions.size();)
   {
     state s = *this + allActions[i];
-    if(inCheck(s, s.m_enemyPieces))
+    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board))
     {
-      //std::cout << "removing: " <<  allActions[i].m_sx << ", ";
-      //std::cout << allActions[i].m_sy << " to ";
-      //std::cout << allActions[i].m_ex << ", " << allActions[i].m_ey << std::endl;      
       allActions.erase(allActions.begin() + i);
     }
     else
@@ -194,14 +265,15 @@ std::vector<action> state::possibleActionsF() const
 std::vector<action> state::possibleActionsE() const
 {
   std::vector<action> allActions;
+  /*
   for(int i = 0; i < m_enemyPieces.size(); i++)
   {
     if(m_enemyPieces[i]->inUse())
     {
-      allActions += m_enemyPieces[i]->possibleActions();
+      allActions += m_enemyPieces[i]->possibleActions(const int & px, const int & py, const bool cp);
     }
   }
-  /*auto it = allActions.begin();
+  auto it = allActions.begin();
   while(it != allActions.end())
   {
     auto s = *this + *it;
@@ -226,4 +298,12 @@ void state::deleteData()
   m_pieces.clear();
   m_friendlyPieces.clear();
   m_enemyPieces.clear();
+}
+
+bool state::inCheck() const
+{
+  for(int i = 0; i < m_friendlyPieces.size(); i++)
+  {
+    return isUnderAttack(*(m_friendlyPieces[i]), m_board);
+  }
 }

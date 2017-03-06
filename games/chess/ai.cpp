@@ -30,7 +30,6 @@ std::string AI::get_name() const
 /// </summary>
 void AI::start()
 {
-  std::cout << "initializing state \n";
   currentState.m_id = player->id;
   currentState = game;
   srand(time(NULL));
@@ -60,7 +59,6 @@ void AI::ended(bool won, const std::string& reason)
 /// <returns>Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.</returns>
 bool AI::run_turn()
 {
-  std::cout << "Starting my turn" << std::endl;
   if(game->moves.size() > 0)
   {
     std::cout << "Opponent's Last Move: '" << game->moves[game->moves.size() - 1]->san << "'" << std::endl;
@@ -69,25 +67,24 @@ bool AI::run_turn()
   std::cout << std::endl;
   if(game->moves.size() > 0)
   {
-    //std::cout << "getting last move....\n";
     action lastMove(game->moves[game->moves.size() - 1]);
-    //std::cout << "got last move\n";
-    //std::cout << "updating state....." << std::endl;
     currentState = currentState + lastMove;
-    //std::cout << "state updated" << std::endl;
   }
-  //currentState.m_board.print();
   auto allActions = currentState.possibleActionsF();
-  std::cout << "number of possible actions: " << allActions.size() << std::endl;
   auto theAction = allActions[rand() % allActions.size()];
+  std::cout << "action chosen: " << intToFile(theAction.m_sx) << theAction.m_sy + 1;
+  std::cout << " to " << intToFile(theAction.m_ex) << theAction.m_ey + 1 << std::endl;
+  std::cout << "other options for the same piece" << std::endl;
+  for(auto a: allActions)
+  {
+    if(a != theAction && a.m_id == theAction.m_id)
+    {
+      std::cout << intToFile(a.m_sx) << a.m_sy + 1;
+      std::cout << " to " << intToFile(a.m_ex) << a.m_ey + 1 << std::endl;
+    }
+  }
   currentState = currentState + theAction;
   modifyGame(player, theAction);
-    // Here is where you'll want to code your AI.
-    // We've provided sample code that:
-    //    1) prints the board to the console
-    //    2) prints the opponent's last move to the console
-    //    3) prints how much time remaining this AI has to calculate moves
-    //    4) makes a random (and probably invalid) move.
 
     
     // 2) print the opponent's last move to the console
@@ -96,13 +93,6 @@ bool AI::run_turn()
     std::cout << "Time Remaining: " << player->time_remaining << " ns" << std::endl;
 
     // 4) make a random (and probably invalid) move.
-    /*
-    chess::Piece random_piece = player->pieces[rand() % player->pieces.size()];
-    std::string random_file(1, 'a' + rand() % 8);
-    int random_rank = (rand() % 8) + 1;
-    random_piece->move(random_file, random_rank);
-    */
-    std::cout << "ending my turn\n";
     return true; // to signify we are done with our turn.
 }
 

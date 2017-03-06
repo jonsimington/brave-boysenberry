@@ -9,8 +9,10 @@
 #include "../player.hpp"
 struct action;
 class state;
+class board;
 
 static std::vector<std::string> upgrade_types = {"Queen", "Bishop", "Rook", "Knight"};
+static bool in_check = false;
 
 template <typename T>
 std::vector<T> operator + (const std::vector<T> & lhs, const std::vector<T> & rhs)
@@ -37,6 +39,7 @@ void modifyGame(cpp_client::chess::Player & player, const action & a);
 bool checkToPlace(const mypiece* p, const board & theBoard, const int & x, const int & y, std::vector<action> & actions);
 void diagonalMoves(const mypiece* p, const board & theBoard, std::vector<action> & allActions);
 void straightMoves(const mypiece* p, const board & theBoard, std::vector<action> & allActions);
-bool inCheck(const state & s, const std::vector<mypiece*> & pieces);
 mypiece* changeType(state & s, mypiece* p, const std::string & typeTo);
+bool isClearHorizontalA(const int & x1, const int & x2, const int & y, const board & theBoard, bool friendly);
 bool isClearHorizontal(const int & x1, const int & x2, const int & y, const board & theBoard);
+bool isUnderAttack(const mypiece & p, const board & theBoard);

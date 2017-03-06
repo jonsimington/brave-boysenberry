@@ -19,7 +19,7 @@ knight* knight::clone() const
   return p;
 }
 
-std::vector<action> knight::possibleActions() const
+std::vector<action> knight::possibleActions(const int & px, const int & py, const bool cp) const
 {
   std::vector<action> allActions;
   if(m_y + 2 < boardLength)

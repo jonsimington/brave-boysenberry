@@ -5,6 +5,7 @@
 #include "bishop.h"
 #include "pawn.h"
 #include "knight.h"
+#include <sstream>
 
 int fileToInt(const char f)
 {
@@ -130,53 +131,33 @@ void straightMoves(const mypiece* p, const board & theBoard, std::vector<action>
   }
 }
 
-bool inCheck(const state & s, const std::vector<mypiece*> & pieces)
-{
-  //std::cout << "enter" << std::endl;
-  std::vector<action> allActions;
-  for(int i = 0; i < pieces.size(); i++)
-  {
-    if(pieces[i]->inUse())
-    {
-      allActions += pieces[i]->possibleActions();
-    }
-  }
-  for(auto it = allActions.begin(); it != allActions.end(); it++)
-  {
-    if(it->m_pr != "" && s.m_pieces.find(it->m_pr)->second->getType() == "King")
-    {
-      //s.m_board.print();
-      //std::cout << "action that kills is: " <<  it->m_sx << ", ";
-      //std::cout << it->m_sy << " to ";
-      //std::cout << it->m_ex << ", " << it->m_ey << std::endl;  
-      return true;
-    }
-  }
-  //std::cout << "leave" << std::endl;
-  return false;
-}
-
 mypiece* changeType(state & s, mypiece* p, const std::string & typeTo)
 {
   mypiece* newpiece;
   std::vector<mypiece*>* pieces;
+  std::string type;
   if(typeTo == "Queen")
   {
     newpiece = new queen;
+    type = "Queen";
   }
   else if(typeTo == "Knight")
   {
     newpiece = new knight;
+    type = "Knight";
   }
   else if(typeTo == "Rook")
   {
     newpiece = new rook;
+    type = "Rook";
   }
   else if(typeTo == "Bishop")
   {
     newpiece = new bishop;
+    type = "Bishop";
   }
   newpiece->copyValues(p);
+  newpiece->m_type = type;
   delete s.m_pieces[newpiece->getId()];
   s.m_pieces[newpiece->getId()] = newpiece;
   if(newpiece->isFriendly())
@@ -194,12 +175,217 @@ mypiece* changeType(state & s, mypiece* p, const std::string & typeTo)
   return newpiece;
 }
 
+bool isClearHorizontalA(const int & x1, const int & x2, const int & y, const board & theBoard, bool friendly)
+{
+  mypiece* p = new mypiece;
+  p->m_y = y;
+  p->m_friendly = friendly;
+  for(int i = x1; i <= x2; i++)
+  {
+    p->m_x = i;
+    if(isUnderAttack(*p, theBoard))
+    {
+      delete p;
+      return false;
+    }
+  }
+  delete p;
+  return true;
+}
+
 bool isClearHorizontal(const int & x1, const int & x2, const int & y, const board & theBoard)
 {
   for(int i = x1; i <= x2; i++)
   {
     if(theBoard[i][y].occupied())
+    {
       return false;
+    }
   }
   return true;
+}
+
+bool isUnderAttack(const mypiece & p, const board & theBoard)
+{
+  int x, y;
+
+  //checking for king attacks
+  for(x = p.getX() - 1; x <= p.getX() + 1; x++)
+  {
+    for(y = p.getY() - 1; y <= p.getY() + 1; y++)
+    {
+      if((x != p.getX() || y != p.getY()) && inBounds(x) && inBounds(y) && theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != p.isFriendly() &&
+      theBoard[x][y].getPiece().getType() == "King")
+        return true;
+    }
+  }
+  
+  //check for pawn attacks
+  for(x = p.getX() - 1; x <= p.getX() + 1; x++)
+  {
+    for(y = p.getY() - 1; y <= p.getY() + 1; y++)
+    {
+      if(x != p.getX() && y != p.getY() && inBounds(x) && inBounds(y) && theBoard[x][y].occupied() && 
+         theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && theBoard[x][y].getPiece().getType() == "Pawn" && 
+         ((y > p.getY() && theBoard[x][y].getPiece().getDirection()) || (y < p.getY() && !theBoard[x][y].getPiece().getDirection())))
+        return true;
+    }
+  }
+
+  //checking for queens and bishops
+  for(x = p.getX() + 1, y = p.getY() + 1; x < boardLength && y < boardLength; x++, y++) //top right
+  {
+    if(theBoard[x][y].occupied())
+    {
+      if(theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && (theBoard[x][y].getPiece().getType() == "Bishop" || theBoard[x][y].getPiece().getType() == "Queen"))
+      {
+        return true;
+      }
+      break;
+    }      
+  }
+  for(x = p.getX() - 1, y = p.getY() + 1; x >= 0 && y < boardLength; x--, y++) //top left
+  {
+    if(theBoard[x][y].occupied())
+    {
+      if(theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && (theBoard[x][y].getPiece().getType() == "Bishop" || theBoard[x][y].getPiece().getType() == "Queen"))
+      {
+        return true;
+      }
+      break;
+    }   
+  }
+  for(x = p.getX() - 1, y = p.getY() - 1; x >= 0 && y >= 0; x--, y--) //bottom left
+  {
+    if(theBoard[x][y].occupied())
+    {
+      if(theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && (theBoard[x][y].getPiece().getType() == "Bishop" || theBoard[x][y].getPiece().getType() == "Queen"))
+      {
+        return true;
+      }
+      break;
+    }   
+  }
+  for(x = p.getX() + 1, y = p.getY() - 1; x < boardLength && y >= 0; x++, y--) //bottom right
+  {
+    if(theBoard[x][y].occupied())
+    {
+      if(theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && (theBoard[x][y].getPiece().getType() == "Bishop" || theBoard[x][y].getPiece().getType() == "Queen"))
+      {
+        return true;
+      }
+      break;
+    }   
+  }
+  
+  //checking for rooks and queens
+  for(x = p.getX() + 1, y = p.getY(); x < boardLength; x++) //checking x value to the right
+  {
+    if(theBoard[x][y].occupied())
+    {
+      if(theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && (theBoard[x][y].getPiece().getType() == "Rook" || theBoard[x][y].getPiece().getType() == "Queen"))
+      {
+        return true;
+      }
+      break;
+    }
+  }
+  for(x = p.getX() - 1, y = p.getY(); x >= 0; x--)
+  {
+    if(theBoard[x][y].occupied())
+    {
+      if(theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && (theBoard[x][y].getPiece().getType() == "Rook" || theBoard[x][y].getPiece().getType() == "Queen"))
+      {
+        return true;
+      }
+      break;
+    }
+  }
+  for(y = p.getY() + 1, x = p.getX(); y < boardLength; y++)
+  {
+    if(theBoard[x][y].occupied())
+    {
+      if(theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && (theBoard[x][y].getPiece().getType() == "Rook" || theBoard[x][y].getPiece().getType() == "Queen"))
+      {
+        return true;
+      }
+      break;
+    } 
+  }
+  for(y = p.getY() - 1, x = p.getX(); y >= 0; y--)
+  {
+    if(theBoard[x][y].occupied())
+    {
+      if(theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && (theBoard[x][y].getPiece().getType() == "Rook" || theBoard[x][y].getPiece().getType() == "Queen"))
+      {
+        return true;
+      }
+      break;
+    }
+  }
+  if(p.getY() + 2 < boardLength)
+  {
+    y = p.getY() + 2;
+    if(p.getX() + 1 < boardLength)
+    {
+      x = p.getX() + 1;
+      if(theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && theBoard[x][y].getPiece().getType() == "Knight")
+        return true;
+    }
+    if(p.getX() - 1 >= 0)
+    {
+      x = p.getX() - 1;
+      if(theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && theBoard[x][y].getPiece().getType() == "Knight")
+        return true;
+    }
+  }
+  if(p.getY() - 2 >= 0)
+  {
+    y = p.getY() - 2;
+    if(p.getX() + 1 < boardLength)
+    {
+      x = p.getX() + 1;
+      if(theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && theBoard[x][y].getPiece().getType() == "Knight")
+        return true;
+    }
+    if(p.getX() - 1 >= 0)
+    {
+      x = p.getX() - 1;
+      if(theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && theBoard[x][y].getPiece().getType() == "Knight")
+        return true;
+    }
+  }
+  if(p.getX() + 2 < boardLength)
+  {
+    x = p.getX() + 2;
+    if(p.getY() + 1 < boardLength)
+    {
+      y = p.getY() + 1;
+      if(theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && theBoard[x][y].getPiece().getType() == "Knight")
+        return true;
+    }
+    if(p.getY() - 1 >= 0)
+    {
+      y = p.getY() - 1;
+      if(theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && theBoard[x][y].getPiece().getType() == "Knight")
+        return true;
+    }
+  }
+  if(p.getX() - 2 >= 0)
+  {
+    x = p.getX() - 2;
+    if(p.getY() + 1 < boardLength)
+    {
+      y = p.getY() + 1;
+      if(theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && theBoard[x][y].getPiece().getType() == "Knight")
+        return true;
+    }
+    if(p.getY() - 1 >= 0)
+    {
+      y = p.getY() - 1;
+      if(theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != p.isFriendly() && theBoard[x][y].getPiece().getType() == "Knight")
+        return true;
+    }
+  }
+  return false;
 }
