@@ -30,11 +30,11 @@ action::action(const mypiece & pm, const mypiece & pr, bool enPassant)
   m_ex = pr.getX();
   if(pm.getDirection())
   {
-    m_ey = pr.getY() + 1;
+    m_ey = pm.getY() - 1;
   }
   else
   {
-    m_ey = pr.getY() - 1;
+    m_ey = pm.getY() + 1;
   }
   m_id = pm.getId();
   m_pr = pr.getId();
