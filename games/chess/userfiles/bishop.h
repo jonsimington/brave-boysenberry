@@ -3,6 +3,7 @@
 #include "action.h"
 #include <vector>
 #include <string>
+#define bishopValue 3
 class bishop: public mypiece
 {
   public:
@@ -11,5 +12,6 @@ class bishop: public mypiece
     bishop(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved);
     virtual std::vector<action> possibleActions(const int & px, const int & py, const bool cp) const;
     virtual bishop* clone() const;
+    virtual float getValue() const;
   private:
 };

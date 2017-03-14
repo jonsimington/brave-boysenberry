@@ -4,6 +4,7 @@
 #include "ai.hpp"
 #include "userfiles/utility.h"
 #include "userfiles/state.h"
+#include "userfiles/minmax.h"
 #include <ctime>
 static state currentState;
 // You can add #includes here for your AI.
@@ -70,19 +71,8 @@ bool AI::run_turn()
     action lastMove(game->moves[game->moves.size() - 1]);
     currentState = currentState + lastMove;
   }
-  auto allActions = currentState.possibleActionsF();
-  auto theAction = allActions[rand() % allActions.size()];
-  std::cout << "action chosen: " << intToFile(theAction.m_sx) << theAction.m_sy + 1;
-  std::cout << " to " << intToFile(theAction.m_ex) << theAction.m_ey + 1 << std::endl;
-  std::cout << "other options for the same piece" << std::endl;
-  for(auto a: allActions)
-  {
-    if(a != theAction && a.m_id == theAction.m_id)
-    {
-      std::cout << intToFile(a.m_sx) << a.m_sy + 1;
-      std::cout << " to " << intToFile(a.m_ex) << a.m_ey + 1 << std::endl;
-    }
-  }
+  auto theAction = IDDLMS(currentState, 3);
+  
   currentState = currentState + theAction;
   modifyGame(player, theAction);
 

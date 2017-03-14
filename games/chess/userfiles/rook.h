@@ -3,6 +3,7 @@
 #include <string>
 #include "mypiece.h"
 #include "action.h"
+#define rookValue 5
 class rook: public mypiece
 {
   public:
@@ -10,5 +11,6 @@ class rook: public mypiece
     rook(const int & x, const int & y, const std::string & s, board & b, bool friendly, bool hasMoved);
     virtual std::vector<action> possibleActions(const int & px, const int & py, const bool cp) const;
     virtual rook* clone() const;
+    virtual float getValue() const;
   private:
 };

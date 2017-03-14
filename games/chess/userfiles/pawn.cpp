@@ -103,3 +103,8 @@ int pawn::getDirection() const
 {
   return m_direction;
 }
+
+float pawn::getValue() const
+{
+  return pawnValue;
+}

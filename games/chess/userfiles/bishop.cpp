@@ -30,3 +30,8 @@ bishop* bishop::clone() const
   p->copyValues(this);
   return p;
 }
+
+float bishop::getValue() const
+{
+  return bishopValue;
+}

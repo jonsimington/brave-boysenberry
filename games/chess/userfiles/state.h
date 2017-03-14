@@ -22,6 +22,10 @@ class state
     state(const cpp_client::chess::Game & g);
     state operator + (const action & a) const;
     void deleteData();
+    float getValue() const;
+    bool terminal() const;
+    bool isDraw() const;
+    void addToPrevious(const action & a);
     
     std::string m_id;
     board m_board; //the board
@@ -32,4 +36,6 @@ class state
     int px; //enpassant target cordinates
     int py; //enpassant target cordinates
     bool can_EnPassant; //is enpassant possible
+    int lastCapture;
+    std::vector<action> previous_actions;
 };

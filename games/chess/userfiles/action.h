@@ -7,6 +7,7 @@ class mypiece;
 struct action
 {
   public:
+    action();
     action(const mypiece & pm, const mypiece & pr, const std::string promoteType = "");
     action(const mypiece & pm, const int & x, const int & y, const std::string promoteType = "");
     action(const mypiece & pm, const mypiece & pr, bool enPassant);

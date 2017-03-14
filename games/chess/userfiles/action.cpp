@@ -1,5 +1,8 @@
 #include "action.h"
 #include "utility.h"
+
+action::action() {}
+
 action::action(const mypiece & pm, const mypiece & pr, const std::string promoteType)
 {
   m_sx = pm.getX();
@@ -58,8 +61,8 @@ action::action(const cpp_client::chess::Move & move)
 
 bool action::operator == (const action & rhs) const
 {
-  return m_id == rhs.m_id && m_pr == rhs.m_pr && m_sx == rhs.m_sx && m_promoteType == rhs.m_promoteType &&
-         m_sy == rhs.m_sy && m_ex == rhs.m_ex && m_ey == rhs.m_ey && m_enPassant == rhs.m_enPassant;
+  return m_sx == rhs.m_sx &&
+         m_sy == rhs.m_sy && m_ex == rhs.m_ex && m_ey == rhs.m_ey;
 }
 
 bool action::operator != (const action & rhs) const

@@ -24,3 +24,8 @@ rook* rook::clone() const
   p->copyValues(this);
   return p;
 }
+
+float rook::getValue() const
+{
+  return rookValue;
+}

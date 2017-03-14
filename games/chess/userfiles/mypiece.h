@@ -24,6 +24,7 @@ class mypiece
     enpassant*/
     virtual std::vector<action> possibleActions(const int & px, const int & py, const bool cp) const;
     virtual mypiece* clone() const; //clones the piece sending a ptr that points to the new piece
+    virtual float getValue() const;
     void copyValues(const mypiece* rhs); //copies the values from the rhs piece
     bool inUse() const;
     std::string getType() const;

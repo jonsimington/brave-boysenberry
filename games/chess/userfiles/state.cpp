@@ -11,6 +11,7 @@
 state::state()
 {
   can_EnPassant = false;
+  lastCapture = 0;
 }
 
 state::state(const state & rhs)
@@ -25,8 +26,11 @@ state::~state()
 
 state & state::operator = (const state & rhs)
 {
+  lastCapture = 0;
+  previous_actions = rhs.previous_actions;
   m_board.reset();
   deleteData();
+  lastCapture = rhs.lastCapture;
   for(auto it = rhs.m_pieces.begin(); it != rhs.m_pieces.end(); it++)
   {
     auto p = m_pieces[it->first] = it->second->clone();
@@ -228,6 +232,15 @@ state state::operator + (const action & a) const
     rook->move(newx, a.m_sy);
     result.m_board[newx][a.m_sy].move(*rook);
   }
+  if(a.m_pr == "" && a.m_promoteType == "" && it->second->getType() != "Pawn")
+  {
+    result.lastCapture++;
+  }
+  else
+  {
+    result.lastCapture = 0;
+  }
+  result.addToPrevious(a);
   return result;
 }
 
@@ -250,7 +263,7 @@ std::vector<action> state::possibleActionsF() const
   for(int i = 0; i < allActions.size();)
   {
     state s = *this + allActions[i];
-    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board))
+    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board) || s.isDraw())
     {
       allActions.erase(allActions.begin() + i);
     }
@@ -265,27 +278,31 @@ std::vector<action> state::possibleActionsF() const
 std::vector<action> state::possibleActionsE() const
 {
   std::vector<action> allActions;
-  /*
+  std::string kingId;
+  in_check = inCheck();
   for(int i = 0; i < m_enemyPieces.size(); i++)
   {
     if(m_enemyPieces[i]->inUse())
     {
-      allActions += m_enemyPieces[i]->possibleActions(const int & px, const int & py, const bool cp);
+      allActions += m_enemyPieces[i]->possibleActions(px,py,can_EnPassant);
+    }
+    if(m_enemyPieces[i]->getType() == "King")
+    {
+      kingId = m_enemyPieces[i]->getId();
     }
   }
-  auto it = allActions.begin();
-  while(it != allActions.end())
+  for(int i = 0; i < allActions.size();)
   {
-    auto s = *this + *it;
-    if(inCheck(s))
+    state s = *this + allActions[i];
+    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board) || s.isDraw())
     {
-      it = allActions.erase(it);
+      allActions.erase(allActions.begin() + i);
     }
     else
     {
-      it++;
+      i++;
     }
-  }*/
+  }
   return allActions;
 }
 
@@ -306,4 +323,74 @@ bool state::inCheck() const
   {
     return isUnderAttack(*(m_friendlyPieces[i]), m_board);
   }
+}
+
+float state::getValue() const
+{
+  float value = 0;
+  for(auto it = m_pieces.cbegin(); it != m_pieces.cend(); it++)
+  {
+    if(it->second->inUse())
+    {
+      if(it->second->isFriendly())
+      {
+        value += it->second->getValue();
+      }
+      else
+      {
+        value -= it->second->getValue();
+      }
+    }
+    else if(it->second->getType() == "King")
+    {
+      if(it->second->isFriendly())
+      {
+        return 0;
+      }
+      else
+      {
+        return 1;
+      }
+    }
+  }
+  value /= (pawnValue * 8 + bishopValue * 2 + rookValue * 2 + knightValue * 2 + queenValue) * 2;
+  //std::cout << value + .5 << std::endl;
+  return value + .5;
+}
+
+bool state::terminal() const
+{
+  for(auto it = m_pieces.cbegin(); it != m_pieces.cend(); it++)
+  {
+    if(it->second->getType() == "King" && !it->second->inUse())
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool state::isDraw() const
+{
+  //std::cout << previous_actions.size() << "\n";
+  if(previous_actions.size() == 8 && lastCapture >= 8)
+  {
+    return previous_actions[0] == previous_actions[4] && 
+    previous_actions[1] == previous_actions[5] &&
+    previous_actions[2] == previous_actions[6] &&
+    previous_actions[3] == previous_actions[7];
+  }
+  else
+  {
+    return false;
+  }
+}
+
+void state::addToPrevious(const action & a)
+{
+  if(previous_actions.size() == 8)
+  {
+    previous_actions.erase(previous_actions.begin());
+  }
+  previous_actions.push_back(a);
 }

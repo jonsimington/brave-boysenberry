@@ -94,3 +94,8 @@ int mypiece::getDirection() const
 {
   return -1;
 }
+
+float mypiece::getValue() const
+{
+  return 0;
+}

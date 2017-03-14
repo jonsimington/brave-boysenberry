@@ -25,3 +25,8 @@ std::vector<action> queen::possibleActions(const int & px, const int & py, const
   straightMoves(this, *m_board, allActions);
   return allActions;
 }
+
+float queen::getValue() const
+{
+  return queenValue;
+}

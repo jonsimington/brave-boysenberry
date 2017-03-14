@@ -68,3 +68,8 @@ std::vector<action> knight::possibleActions(const int & px, const int & py, cons
   }
   return allActions;
 }
+
+float knight::getValue() const
+{
+  return knightValue;
+}
