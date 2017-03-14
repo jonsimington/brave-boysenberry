@@ -31,6 +31,7 @@ bool inBounds(const int & i)
 
 void modifyGame(cpp_client::chess::Player & player, const action & a)
 {
+  std::cout << "modifying game...." << std::endl;
   for(int i = 0; i < player->pieces.size(); i++)
   {
     if(player->pieces[i]->id == a.m_id)
@@ -39,6 +40,7 @@ void modifyGame(cpp_client::chess::Player & player, const action & a)
       break;
     }
   }
+  std::cout << "done modifying game...." << std::endl;
 }
 
 bool checkToPlace(const mypiece* p, const board & theBoard, const int & x, const int & y, std::vector<action> & actions)
