@@ -253,7 +253,7 @@ std::vector<action> state::possibleActionsF() const
   {
     if(m_friendlyPieces[i]->inUse())
     {
-      allActions += m_friendlyPieces[i]->possibleActions(px,py,can_EnPassant);
+      m_friendlyPieces[i]->possibleActions(px,py,can_EnPassant,allActions);
     }
     if(m_friendlyPieces[i]->getType() == "King")
     {
@@ -284,7 +284,7 @@ std::vector<action> state::possibleActionsE() const
   {
     if(m_enemyPieces[i]->inUse())
     {
-      allActions += m_enemyPieces[i]->possibleActions(px,py,can_EnPassant);
+      m_enemyPieces[i]->possibleActions(px,py,can_EnPassant,allActions);
     }
     if(m_enemyPieces[i]->getType() == "King")
     {
@@ -345,11 +345,11 @@ float state::getValue() const
     {
       if(it->second->isFriendly())
       {
-        return 0;
+        return -.1;
       }
       else
       {
-        return 1;
+        return 1.1;
       }
     }
   }
@@ -375,6 +375,10 @@ bool state::isDraw() const
   //std::cout << previous_actions.size() << "\n";
   if(previous_actions.size() == 8 && lastCapture >= 8)
   {
+    if(lastCapture >= 50)
+    {
+      return true;
+    }
     return previous_actions[0] == previous_actions[4] && 
     previous_actions[1] == previous_actions[5] &&
     previous_actions[2] == previous_actions[6] &&

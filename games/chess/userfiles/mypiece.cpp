@@ -43,9 +43,8 @@ void mypiece::remove()
   m_inUse = false;
 }
 
-std::vector <action> mypiece::possibleActions(const int & px, const int & py, const bool cp) const
+void mypiece::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
 {
-  return std::vector<action>();
 }
 
 mypiece* mypiece::clone() const

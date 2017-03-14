@@ -11,9 +11,8 @@ mypiece(x,y,id,b,friendly, hasMoved)
   m_type = "King";
 }
 
-std::vector<action> king::possibleActions(const int & px, const int & py, const bool cp) const
+void king::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
 {
-  std::vector<action> allActions;
   if(m_y + 1 < boardLength)
   {
     checkToPlace(this,*m_board, m_x, m_y + 1,allActions);
@@ -56,7 +55,6 @@ std::vector<action> king::possibleActions(const int & px, const int & py, const 
   {
     allActions.push_back(action(*this, m_x + 2, m_y));
   }
-  return allActions;
 }
 
 king* king::clone() const

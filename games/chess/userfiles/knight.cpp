@@ -19,9 +19,8 @@ knight* knight::clone() const
   return p;
 }
 
-std::vector<action> knight::possibleActions(const int & px, const int & py, const bool cp) const
+void knight::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
 {
-  std::vector<action> allActions;
   if(m_y + 2 < boardLength)
   {
     if(m_x + 1 < boardLength)
@@ -66,7 +65,6 @@ std::vector<action> knight::possibleActions(const int & px, const int & py, cons
       checkToPlace(this, *m_board, m_x - 2, m_y - 1, allActions);
     }
   }
-  return allActions;
 }
 
 float knight::getValue() const

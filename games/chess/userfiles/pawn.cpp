@@ -12,10 +12,9 @@ mypiece(x,y,id,b,friendly, hasMoved)
   m_direction = direction;
 }
 
-std::vector<action> pawn::possibleActions(const int & px, const int & py, const bool cp) const
+void pawn::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
 {
   bool aheadOccupied;
-  std::vector<action> allActions;
   int x = m_x - 1;
   int y = lookAhead(1);
   if(!(*m_board)[m_x][y].occupied())
@@ -78,7 +77,6 @@ std::vector<action> pawn::possibleActions(const int & px, const int & py, const 
     if(!(*m_board)[m_x][y].occupied())
       allActions.push_back(action(*this, m_x, y));
   }
-  return allActions;
 }
 
 int pawn::lookAhead(const int & d) const
