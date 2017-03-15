@@ -7,6 +7,7 @@
 #include "knight.h"
 #include <sstream>
 
+
 int fileToInt(const char f)
 {
   return f - 'a';  

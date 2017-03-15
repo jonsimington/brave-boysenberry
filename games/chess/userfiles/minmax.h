@@ -1,6 +1,5 @@
 #pragma once
 #include "state.h"
-#include <climits>
 #include <cfloat>
 #include <algorithm>
 
@@ -26,10 +25,10 @@ action MinMaxSearch(const state & s, const int depth)
 {
   auto allActions = s.possibleActionsF();
   action bestAction;
-  auto bestActionScore = FLT_MIN;
+  float bestActionScore = FLT_MAX * -1;
   for(const auto & a: allActions)
   {
-    auto value = min_value(s + a, depth - 1);
+    float value = min_value(s + a, depth - 1);
     if((value > bestActionScore) || (value == bestActionScore && std::rand() % 2))
     {
       bestAction = a;
@@ -47,10 +46,9 @@ float max_value(const state & s, const int depth)
   }
   if(depth == 0 || s.terminal())
   {
-    auto value = s.getValue();
-    return value;
+   return s.getValue();
   }
-  float value = FLT_MIN;
+  float value = FLT_MAX * -1;
   auto allActions = s.possibleActionsF();
   if(allActions.size() == 0)
   {
@@ -71,8 +69,7 @@ float min_value(const state & s, const int depth)
   }
   if(depth == 0 || s.terminal())
   {
-    auto value = s.getValue();
-    return value;
+    return s.getValue();
   }
   float value = FLT_MAX;
   auto allActions = s.possibleActionsE();
