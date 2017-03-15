@@ -352,11 +352,11 @@ float state::getValue() const
     {
       if(it->second->isFriendly())
       {
-        return FLT_MIN;
+        return FLT_MIN + 1;
       }
       else
       {
-        return FLT_MAX;
+        return FLT_MAX - 1;
       }
     }
   }
