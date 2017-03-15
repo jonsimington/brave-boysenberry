@@ -23,8 +23,8 @@ action IDDLMS(const state & s, const int & maxDepth)
 
 action MinMaxSearch(const state & s, const int depth)
 {
-  auto allActions = s.possibleActionsF();
   action bestAction;
+  auto allActions = s.possibleActionsF();
   float bestActionScore = FLT_MAX * -1;
   for(const auto & a: allActions)
   {
@@ -40,10 +40,6 @@ action MinMaxSearch(const state & s, const int depth)
 
 float max_value(const state & s, const int depth)
 {
-  if(s.isDraw())
-  {
-    return 0;
-  }
   if(depth == 0 || s.terminal())
   {
    return s.getValue();
@@ -63,10 +59,6 @@ float max_value(const state & s, const int depth)
 
 float min_value(const state & s, const int depth)
 {
-  if(s.isDraw())
-  {
-    return 0;
-  }
   if(depth == 0 || s.terminal())
   {
     return s.getValue();

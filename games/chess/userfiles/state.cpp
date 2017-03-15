@@ -354,6 +354,10 @@ bool state::inCheck() const
 float state::getValue() const
 {
   float value = 0;
+  if(isDraw())
+  {
+    return 0;
+  }
   for(auto it = m_pieces.cbegin(); it != m_pieces.cend(); it++)
   {
     if(it->second->inUse())
@@ -384,6 +388,10 @@ float state::getValue() const
 
 bool state::terminal() const
 {
+  if(isDraw())
+  {
+    return true;
+  }
   for(auto it = m_pieces.cbegin(); it != m_pieces.cend(); it++)
   {
     if(it->second->getType() == "King" && !it->second->inUse())
