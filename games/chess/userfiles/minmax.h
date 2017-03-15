@@ -23,19 +23,24 @@ action IDDLMS(const state & s, const int & maxDepth)
 
 action MinMaxSearch(const state & s, const int depth)
 {
-  action bestAction;
+  std::vector<action> sameScore;
   auto allActions = s.possibleActionsF();
   float bestActionScore = FLT_MAX * -1;
   for(const auto & a: allActions)
   {
     float value = min_value(s + a, depth - 1);
-    if((value > bestActionScore) || (value == bestActionScore && std::rand() % 2))
+    if((value > bestActionScore))
     {
-      bestAction = a;
       bestActionScore = value;
+      sameScore.clear();
+      sameScore.push_back(a);
+    }
+    else if(value == bestActionScore)
+    {
+      sameScore.push_back(a);
     }
   }
-  return bestAction;
+  return sameScore[rand() % sameScore.size()];
 }
 
 float max_value(const state & s, const int depth)
@@ -46,7 +51,7 @@ float max_value(const state & s, const int depth)
   }
   float value = FLT_MAX * -1;
   auto allActions = s.possibleActionsF();
-  if(allActions.size() == 0)
+  if(allActions.size() == 0 && !s.inCheck(s.m_friendlyPieces))
   {
     return 0;
   }
@@ -65,7 +70,7 @@ float min_value(const state & s, const int depth)
   }
   float value = FLT_MAX;
   auto allActions = s.possibleActionsE();
-  if(allActions.size() == 0)
+  if(allActions.size() == 0 && !s.inCheck(s.m_enemyPieces))
   {
     return 0;
   }

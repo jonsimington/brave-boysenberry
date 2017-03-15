@@ -274,7 +274,7 @@ std::vector<action> state::possibleActionsF() const
 {
   std::vector<action> allActions;
   std::string kingId;
-  in_check = inCheck();
+  in_check = inCheck(m_friendlyPieces);
   for(int i = 0; i < m_friendlyPieces.size(); i++)
   {
     if(m_friendlyPieces[i]->inUse())
@@ -305,7 +305,7 @@ std::vector<action> state::possibleActionsE() const
 {
   std::vector<action> allActions;
   std::string kingId;
-  in_check = inCheck();
+  in_check = inCheck(m_enemyPieces);
   for(int i = 0; i < m_enemyPieces.size(); i++)
   {
     if(m_enemyPieces[i]->inUse())
@@ -343,11 +343,14 @@ void state::deleteData()
   m_enemyPieces.clear();
 }
 
-bool state::inCheck() const
+bool state::inCheck(const std::vector<mypiece*> & pieces) const
 {
-  for(int i = 0; i < m_friendlyPieces.size(); i++)
+  for(int i = 0; i < pieces.size(); i++)
   {
-    return isUnderAttack(*(m_friendlyPieces[i]), m_board);
+    if(pieces[i]->getType() == "King")
+    {
+      return isUnderAttack(*pieces[i], m_board);
+    }
   }
 }
 
