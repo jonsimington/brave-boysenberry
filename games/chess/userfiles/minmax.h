@@ -24,10 +24,10 @@ action IDDLMS(const state & s, const int & maxDepth)
 
 action MinMaxSearch(const state & s, const int depth)
 {
-  float bestActionScore = FLT_MIN;
   auto allActions = s.possibleActionsF();
   auto bestAction = allActions[0];
-  for(int i = 1; i < allActions.size(); i ++)
+  auto bestActionScore = min_value(s + allActions[0], depth - 1);
+  for(int i = 1; i < allActions.size(); i++)
   {
     auto value = min_value(s + allActions[i], depth - 1);
     if((value > bestActionScore) || (value == bestActionScore && std::rand() % 2))
