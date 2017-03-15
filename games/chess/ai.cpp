@@ -72,7 +72,6 @@ bool AI::run_turn()
     currentState = currentState + lastMove;
   }
   auto theAction = IDDLMS(currentState, 3);
-  
   currentState = currentState + theAction;
   modifyGame(player, theAction);
 

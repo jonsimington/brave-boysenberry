@@ -8,6 +8,7 @@
 #include "queen.h"
 #include <cmath>
 #include <sstream>
+#include <cfloat>
 state::state()
 {
   can_EnPassant = false;
@@ -185,52 +186,76 @@ state::state(const cpp_client::chess::Game & g)
 
 state state::operator + (const action & a) const
 {
+  //std::cout<< 1 << std::endl;
   state result(*this);
+  //std::cout<< 2 << std::endl;
   if(a.m_promoteType != "")
   {
     changeType(result, result.m_pieces[a.m_id], a.m_promoteType);
   }
+  //std::cout<< 3 << std::endl;
   auto it = result.m_pieces.find(a.m_id);
+  //std::cout<< 4 << std::endl;
   if(a.m_pr != "")
   {
     result.m_pieces[a.m_pr]->remove(); //m_inUse = false;
+    //std::cout<< 5 << std::endl;
     result.m_board[a.m_ex][a.m_ey].release();
   }
+  //std::cout<< 6 << std::endl;
+  //std::cout << a.m_sx << " " << a.m_sy << std::endl;
   result.m_board[a.m_sx][a.m_sy].release();
+  //std::cout<< 7 << std::endl;
   it->second->move(a.m_ex, a.m_ey);
+  //std::cout<< 8 << std::endl;
   result.m_board[a.m_ex][a.m_ey].move(*(it->second));
+  //std::cout<< 9 << std::endl;
   it->second->m_hasMoved = true;
+  //std::cout<< 10 << std::endl;
   if(it->second->getType() == "Pawn" && std::abs(a.m_ey - a.m_sy) == 2)
   {
     result.can_EnPassant = true;
     result.px = a.m_ex;
     if(it->second->getDirection())
+    {
       result.py = a.m_ey - 1;
+    }
     else
+    {
       result.py = a.m_ey + 1;
+    }
   }
   else
   {
     result.can_EnPassant = false;
   }
+  //std::cout<< 11 << std::endl;
   if(it->second->getType() == "King" && std::abs(a.m_ex - a.m_sx) == 2)
   {
     mypiece* rook;
     int newx;
+    //std::cout<< 12 << std::endl;
     if(a.m_ex - a.m_sx > 0)
     {
       rook = result.m_board[boardLength - 1][a.m_sy].getPieceRef();
+      //std::cout<< 13 << std::endl;
       newx = a.m_ex - 1;
     }
     else
     {
       rook = result.m_board[0][a.m_sy].getPieceRef();
+      //std::cout<< 14 << std::endl;
       newx = a.m_ex + 1;
     }
+    //std::cout<< 21 << std::endl;
     result.m_board[rook->getX()][rook->getY()].release();
+    //std::cout<< 15 << std::endl;
     rook->m_hasMoved = true;
+    //std::cout<< 16 << std::endl;
     rook->move(newx, a.m_sy);
+    //std::cout<< 17 << std::endl;
     result.m_board[newx][a.m_sy].move(*rook);
+    //std::cout<< 18 << std::endl;
   }
   if(a.m_pr == "" && a.m_promoteType == "" && it->second->getType() != "Pawn")
   {
@@ -240,7 +265,9 @@ state state::operator + (const action & a) const
   {
     result.lastCapture = 0;
   }
+  //std::cout<< 19 << std::endl;
   result.addToPrevious(a);
+  //std::cout<< 20 << std::endl;
   return result;
 }
 
@@ -263,7 +290,7 @@ std::vector<action> state::possibleActionsF() const
   for(int i = 0; i < allActions.size();)
   {
     state s = *this + allActions[i];
-    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board) || s.isDraw())
+    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board))
     {
       allActions.erase(allActions.begin() + i);
     }
@@ -294,7 +321,7 @@ std::vector<action> state::possibleActionsE() const
   for(int i = 0; i < allActions.size();)
   {
     state s = *this + allActions[i];
-    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board) || s.isDraw())
+    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board))
     {
       allActions.erase(allActions.begin() + i);
     }
@@ -345,17 +372,15 @@ float state::getValue() const
     {
       if(it->second->isFriendly())
       {
-        return -.1;
+        return FLT_MIN;
       }
       else
       {
-        return 1.1;
+        return FLT_MAX;
       }
     }
   }
-  value /= (pawnValue * 8 + bishopValue * 2 + rookValue * 2 + knightValue * 2 + queenValue) * 2;
-  //std::cout << value + .5 << std::endl;
-  return value + .5;
+  return value;
 }
 
 bool state::terminal() const

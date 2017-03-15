@@ -24,15 +24,15 @@ action IDDLMS(const state & s, const int & maxDepth)
 
 action MinMaxSearch(const state & s, const int depth)
 {
-  action bestAction;
   float bestActionScore = FLT_MIN;
   auto allActions = s.possibleActionsF();
-  for(const auto & a: allActions)
+  auto bestAction = allActions[0];
+  for(int i = 1; i < allActions.size(); i ++)
   {
-    auto value = min_value(s + a, depth - 1);
+    auto value = min_value(s + allActions[i], depth - 1);
     if((value > bestActionScore) || (value == bestActionScore && std::rand() % 2))
     {
-      bestAction = a;
+      bestAction = allActions[i];
       bestActionScore = value;
     }
   }
@@ -41,6 +41,10 @@ action MinMaxSearch(const state & s, const int depth)
 
 float max_value(const state & s, const int depth)
 {
+  if(s.isDraw())
+  {
+    return 0;
+  }
   if(depth == 0 || s.terminal())
   {
     auto value = s.getValue();
@@ -48,6 +52,10 @@ float max_value(const state & s, const int depth)
   }
   float value = FLT_MIN;
   auto allActions = s.possibleActionsF();
+  if(allActions.size() == 0)
+  {
+    return 0;
+  }
   for(const auto & a: allActions)
   {
     value = std::max(value, min_value(s + a, depth - 1));
@@ -57,6 +65,10 @@ float max_value(const state & s, const int depth)
 
 float min_value(const state & s, const int depth)
 {
+  if(s.isDraw())
+  {
+    return 0;
+  }
   if(depth == 0 || s.terminal())
   {
     auto value = s.getValue();
@@ -64,6 +76,10 @@ float min_value(const state & s, const int depth)
   }
   float value = FLT_MAX;
   auto allActions = s.possibleActionsE();
+  if(allActions.size() == 0)
+  {
+    return 0;
+  }
   for(const auto & a: allActions)
   {
     value = std::min(value, max_value(s + a, depth - 1));
