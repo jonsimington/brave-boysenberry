@@ -33,7 +33,9 @@ void pawn::possibleActions(const int & px, const int & py, const bool cp, std::v
     }
   }
   else
+  {
     aheadOccupied = true;
+  }
   if(inBounds(x) && (*m_board)[x][y].occupied() && (*m_board)[x][y].getPiece().isFriendly() != m_friendly)
   {
     if(y == 0 || y == boardLength - 1)
@@ -75,7 +77,9 @@ void pawn::possibleActions(const int & px, const int & py, const bool cp, std::v
   {
     y = lookAhead(2);
     if(!(*m_board)[m_x][y].occupied())
+    {
       allActions.push_back(action(*this, m_x, y));
+    }
   }
 }
 

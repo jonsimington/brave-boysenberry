@@ -51,9 +51,16 @@ float max_value(const state & s, const int depth)
   }
   float value = FLT_MAX * -1;
   auto allActions = s.possibleActionsF();
-  if(allActions.size() == 0 && !s.inCheck(s.m_friendlyPieces))
+  if(allActions.size() == 0)
   {
-    return 0;
+    if(s.inCheck(s.m_friendlyPieces))
+    {
+      return -10000; 
+    }
+    else
+    {
+      return 0;
+    }
   }
   for(const auto & a: allActions)
   {
@@ -70,9 +77,16 @@ float min_value(const state & s, const int depth)
   }
   float value = FLT_MAX;
   auto allActions = s.possibleActionsE();
-  if(allActions.size() == 0 && !s.inCheck(s.m_enemyPieces))
+  if(allActions.size() == 0)
   {
-    return 0;
+    if(s.inCheck(s.m_enemyPieces))
+    {
+      return 10000; 
+    }
+    else
+    {
+      return 0;
+    }
   }
   for(const auto & a: allActions)
   {

@@ -217,11 +217,11 @@ state state::operator + (const action & a) const
     result.px = a.m_ex;
     if(it->second->getDirection())
     {
-      result.py = a.m_ey - 1;
+      result.py = a.m_ey + 1;
     }
     else
     {
-      result.py = a.m_ey + 1;
+      result.py = a.m_ey - 1;
     }
   }
   else
