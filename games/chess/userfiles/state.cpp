@@ -11,7 +11,6 @@
 state::state()
 {
   can_EnPassant = false;
-  lastCapture = 0;
 }
 
 state::state(const state & rhs)
@@ -26,7 +25,7 @@ state::~state()
 
 state & state::operator = (const state & rhs)
 {
-  lastCapture = 0;
+  lastCapture = rhs.lastCapture;
   previous_actions = rhs.previous_actions;
   m_board.reset();
   deleteData();
@@ -183,94 +182,139 @@ state::state(const cpp_client::chess::Game & g)
   *this = g; 
 }
 
-state state::operator + (const action & a) const
+void state::applyAction(const action & a)
 {
-  //std::cout<< 1 << std::endl;
-  state result(*this);
-  //std::cout<< 2 << std::endl;
   if(a.m_promoteType != "")
   {
-    changeType(result, result.m_pieces[a.m_id], a.m_promoteType);
+    changeType(*this, m_pieces[a.m_id], a.m_promoteType);
   }
-  //std::cout<< 3 << std::endl;
-  auto it = result.m_pieces.find(a.m_id);
-  //std::cout<< 4 << std::endl;
+  auto it = m_pieces.find(a.m_id);
   if(a.m_pr != "")
   {
-    result.m_pieces[a.m_pr]->remove(); //m_inUse = false;
-    //std::cout<< 5 << std::endl;
-    result.m_board[a.m_ex][a.m_ey].release();
+    m_pieces[a.m_pr]->remove(); //m_inUse = false;
+    m_board[a.m_ex][a.m_ey].release();
   }
-  //std::cout<< 6 << std::endl;
-  //std::cout << a.m_sx << " " << a.m_sy << std::endl;
-  result.m_board[a.m_sx][a.m_sy].release();
-  //std::cout<< 7 << std::endl;
+  m_board[a.m_sx][a.m_sy].release();
   it->second->move(a.m_ex, a.m_ey);
-  //std::cout<< 8 << std::endl;
-  result.m_board[a.m_ex][a.m_ey].move(*(it->second));
-  //std::cout<< 9 << std::endl;
+  m_board[a.m_ex][a.m_ey].move(*(it->second));
   it->second->m_hasMoved = true;
-  //std::cout<< 10 << std::endl;
   if(it->second->getType() == "Pawn" && std::abs(a.m_ey - a.m_sy) == 2)
   {
-    result.can_EnPassant = true;
-    result.px = a.m_ex;
+    can_EnPassant = true;
+    px = a.m_ex;
     if(it->second->getDirection())
     {
-      result.py = a.m_ey + 1;
+      py = a.m_ey + 1;
     }
     else
     {
-      result.py = a.m_ey - 1;
+      py = a.m_ey - 1;
     }
   }
   else
   {
-    result.can_EnPassant = false;
+    can_EnPassant = false;
   }
-  //std::cout<< 11 << std::endl;
   if(it->second->getType() == "King" && std::abs(a.m_ex - a.m_sx) == 2)
   {
     mypiece* rook;
     int newx;
-    //std::cout<< 12 << std::endl;
     if(a.m_ex - a.m_sx > 0)
     {
-      rook = result.m_board[boardLength - 1][a.m_sy].getPieceRef();
-      //std::cout<< 13 << std::endl;
+      rook = m_board[boardLength - 1][a.m_sy].getPieceRef();
       newx = a.m_ex - 1;
     }
     else
     {
-      rook = result.m_board[0][a.m_sy].getPieceRef();
-      //std::cout<< 14 << std::endl;
+      rook = m_board[0][a.m_sy].getPieceRef();
       newx = a.m_ex + 1;
     }
-    //std::cout<< 21 << std::endl;
-    result.m_board[rook->getX()][rook->getY()].release();
-    //std::cout<< 15 << std::endl;
+    m_board[rook->getX()][rook->getY()].release();
     rook->m_hasMoved = true;
-    //std::cout<< 16 << std::endl;
     rook->move(newx, a.m_sy);
-    //std::cout<< 17 << std::endl;
-    result.m_board[newx][a.m_sy].move(*rook);
-    //std::cout<< 18 << std::endl;
+    m_board[newx][a.m_sy].move(*rook);
   }
   if(a.m_pr == "" && a.m_promoteType == "" && it->second->getType() != "Pawn")
   {
-    result.lastCapture++;
+    if(lastCapture.size() == 0)
+    {
+      lastCapture.push_back(0); 
+    }
+    else
+    {
+      lastCapture.push_back(lastCapture[lastCapture.size() - 1] + 1);
+    }
   }
   else
   {
-    result.lastCapture = 0;
+    lastCapture.push_back(0);
   }
-  //std::cout<< 19 << std::endl;
-  result.addToPrevious(a);
-  //std::cout<< 20 << std::endl;
+  addToPrevious(a); 
+}
+
+void state::reverseAction(const action & a)
+{
+  if(a.m_promoteType != "")
+  {
+    changeType(*this, m_pieces[a.m_id], a.m_promoteFrom);
+  }
+  auto it = m_pieces.find(a.m_id);
+  m_board[a.m_ex][a.m_ey].release();
+  m_board[a.m_sx][a.m_sy].move(*(it->second));
+  it->second->move(a.m_sx, a.m_sy);
+  if(a.m_firstMove)
+  {
+    it->second->m_hasMoved = false;
+  }
+  if(it->second->getType() == "King" && std::abs(a.m_ex - a.m_sx) == 2)
+  {
+    //std::cout << "King stuff" << std::endl;
+    mypiece* rook;
+    int newx;
+    if(a.m_ex - a.m_sx > 0)
+    {
+      rook = m_board[a.m_ex - 1][a.m_sy].getPieceRef();
+      newx = 7;
+    }
+    else
+    {
+      rook = m_board[a.m_ex + 1][a.m_sy].getPieceRef();
+      newx = 0;
+    }
+    m_board[rook->getX()][rook->getY()].release();
+    rook->m_hasMoved = false;
+    rook->move(newx, a.m_sy);
+    m_board[newx][a.m_sy].move(*rook);
+    //std::cout << "End King stuff" << std::endl;
+  }
+  if(a.m_pr != "")
+  {
+    it = m_pieces.find(a.m_pr);
+    it->second->m_inUse = true;
+    m_board[it->second->getX()][it->second->getY()].move(*(it->second));
+  }
+  if(a.m_enPassant)
+  {
+    can_EnPassant = true;
+    px = a.m_ex;
+    py = a.m_ey;
+  }
+  else
+  {
+    can_EnPassant = false;
+  }
+  lastCapture.erase(lastCapture.begin() + lastCapture.size() - 1);
+  previous_actions.erase(previous_actions.begin() + previous_actions.size() - 1);
+}
+
+state state::operator + (const action & a) const
+{
+  state result(*this);
+  result.applyAction(a);
   return result;
 }
 
-std::vector<action> state::possibleActionsF() const
+std::vector<action> state::possibleActionsF()
 {
   std::vector<action> allActions;
   std::string kingId;
@@ -288,20 +332,22 @@ std::vector<action> state::possibleActionsF() const
   }
   for(int i = 0; i < allActions.size();)
   {
-    state s = *this + allActions[i];
-    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board))
+    this->applyAction(allActions[i]);
+    if(isUnderAttack(*(m_pieces[kingId]), m_board))
     {
+      this->reverseAction(allActions[i]);
       allActions.erase(allActions.begin() + i);
     }
     else
     {
+      this->reverseAction(allActions[i]);
       i++;
     }
   }
   return allActions;
 }
 
-std::vector<action> state::possibleActionsE() const
+std::vector<action> state::possibleActionsE()
 {
   std::vector<action> allActions;
   std::string kingId;
@@ -319,13 +365,15 @@ std::vector<action> state::possibleActionsE() const
   }
   for(int i = 0; i < allActions.size();)
   {
-    state s = *this + allActions[i];
-    if(isUnderAttack(*(s.m_pieces[kingId]), s.m_board))
+    this->applyAction(allActions[i]);
+    if(isUnderAttack(*(m_pieces[kingId]), m_board))
     {
+      this->reverseAction(allActions[i]);
       allActions.erase(allActions.begin() + i);
     }
     else
     {
+      this->reverseAction(allActions[i]);
       i++;
     }
   }
@@ -408,16 +456,26 @@ bool state::terminal() const
 bool state::isDraw() const
 {
   //std::cout << previous_actions.size() << "\n";
-  if(previous_actions.size() == 8 && lastCapture >= 8)
+  int lc;
+  if(lastCapture.size() == 0)
   {
-    if(lastCapture >= 50)
+    lc = 0;
+  }
+  else
+  {
+    lc = lastCapture[lastCapture.size() - 1];
+  }
+  if(previous_actions.size() >= 8 && lc >= 8)
+  {
+    if(lc >= 50)
     {
       return true;
     }
-    return previous_actions[0] == previous_actions[4] && 
-    previous_actions[1] == previous_actions[5] &&
-    previous_actions[2] == previous_actions[6] &&
-    previous_actions[3] == previous_actions[7];
+    int size = previous_actions.size();
+    return previous_actions[size - 8] == previous_actions[size - 4] && 
+    previous_actions[size - 7] == previous_actions[size - 3] &&
+    previous_actions[size - 6] == previous_actions[size - 2] &&
+    previous_actions[size - 5] == previous_actions[size - 1];
   }
   else
   {
@@ -427,9 +485,5 @@ bool state::isDraw() const
 
 void state::addToPrevious(const action & a)
 {
-  if(previous_actions.size() == 8)
-  {
-    previous_actions.erase(previous_actions.begin());
-  }
   previous_actions.push_back(a);
 }

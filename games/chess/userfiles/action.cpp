@@ -12,7 +12,9 @@ action::action(const mypiece & pm, const mypiece & pr, const std::string promote
   m_id = pm.getId();
   m_pr = pr.getId();
   m_promoteType = promoteType;
+  m_promoteFrom = pm.getType();
   m_enPassant = false;
+  m_firstMove = !pm.hasMoved();
 }
 
 action::action(const mypiece & pm, const int & x, const int & y, const std::string promoteType)
@@ -23,7 +25,9 @@ action::action(const mypiece & pm, const int & x, const int & y, const std::stri
   m_ey = y;
   m_id = pm.getId();
   m_promoteType = promoteType;
+  m_promoteFrom = pm.getType();
   m_enPassant = false;
+  m_firstMove = !pm.hasMoved();
 }
 
 action::action(const mypiece & pm, const mypiece & pr, bool enPassant)
@@ -42,6 +46,7 @@ action::action(const mypiece & pm, const mypiece & pr, bool enPassant)
   m_id = pm.getId();
   m_pr = pr.getId();
   m_enPassant = enPassant;
+  m_firstMove = !pm.hasMoved();
 }
 
 action::action(const cpp_client::chess::Move & move)

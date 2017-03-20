@@ -3,11 +3,12 @@
 #include <cfloat>
 #include <algorithm>
 
-action MinMaxSearch(const state & s, const int depth);
-float max_value(const state & s, const int depth);
-float min_value(const state & s, const int depth);
+action MinMaxSearch(state & s, const int depth);
+float max_value(state & s, const int depth);
+float min_value(state & s, const int depth);
 
-action IDDLMS(const state & s, const int & maxDepth)
+//Iterative deepening depth limited min max search
+action IDDLMS(state & s, const int & maxDepth)
 {
   int currentDepth = 1;
   action a;
@@ -20,15 +21,17 @@ action IDDLMS(const state & s, const int & maxDepth)
   }
   return a;
 }
-
-action MinMaxSearch(const state & s, const int depth)
+//Minmax search of set depth
+action MinMaxSearch(state & s, const int depth)
 {
   std::vector<action> sameScore;
   auto allActions = s.possibleActionsF();
   float bestActionScore = FLT_MAX * -1;
   for(const auto & a: allActions)
   {
-    float value = min_value(s + a, depth - 1);
+    s.applyAction(a);
+    float value = min_value(s, depth - 1);
+    s.reverseAction(a);
     if((value > bestActionScore))
     {
       bestActionScore = value;
@@ -43,7 +46,7 @@ action MinMaxSearch(const state & s, const int depth)
   return sameScore[rand() % sameScore.size()];
 }
 
-float max_value(const state & s, const int depth)
+float max_value(state & s, const int depth)
 {
   if(depth == 0 || s.terminal())
   {
@@ -57,19 +60,21 @@ float max_value(const state & s, const int depth)
     {
       return -10000; 
     }
-    else
+    else//if they're not in check and there's no move's it's a draw
     {
       return 0;
     }
   }
   for(const auto & a: allActions)
   {
-    value = std::max(value, min_value(s + a, depth - 1));
+    s.applyAction(a);
+    value = std::max(value, min_value(s, depth - 1));
+    s.reverseAction(a);
   }
   return value;
 }
 
-float min_value(const state & s, const int depth)
+float min_value(state & s, const int depth)
 {
   if(depth == 0 || s.terminal())
   {
@@ -83,14 +88,16 @@ float min_value(const state & s, const int depth)
     {
       return 10000; 
     }
-    else
+    else//if they're not in check and there's no move its a draw
     {
       return 0;
     }
   }
   for(const auto & a: allActions)
   {
-    value = std::min(value, max_value(s + a, depth - 1));
+    s.applyAction(a);
+    value = std::min(value, max_value(s, depth - 1));
+    s.reverseAction(a);
   }
   return value;
 }

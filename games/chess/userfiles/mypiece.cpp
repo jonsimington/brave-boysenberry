@@ -98,3 +98,8 @@ float mypiece::getValue() const
 {
   return 0;
 }
+
+bool mypiece::hasMoved() const
+{
+  return m_hasMoved;
+}

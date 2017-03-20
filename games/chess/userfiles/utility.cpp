@@ -159,6 +159,17 @@ mypiece* changeType(state & s, mypiece* p, const std::string & typeTo)
     newpiece = new bishop;
     type = "Bishop";
   }
+  else if(typeTo == "Pawn")
+  {
+    pawn* newpawn = new pawn;
+    if(p->getY() < 2)
+      newpawn->m_direction = 1;
+    else
+      newpawn->m_direction = 0;
+    type = "Pawn";
+    newpiece = newpawn;
+    newpawn = nullptr;
+  }
   newpiece->copyValues(p);
   newpiece->m_type = type;
   newpiece->m_board = p->m_board;

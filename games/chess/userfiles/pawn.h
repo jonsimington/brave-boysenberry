@@ -14,7 +14,6 @@ class pawn: public mypiece
     virtual pawn* clone() const;
     virtual int getDirection() const;
     virtual float getValue() const;
-  private:
     /*0 is forward 1 is backwards */
     bool m_direction;
 };

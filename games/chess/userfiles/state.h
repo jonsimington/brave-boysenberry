@@ -12,8 +12,8 @@ class board;
 class state
 {
   public:
-    std::vector<action> possibleActionsF() const;
-    std::vector<action> possibleActionsE() const;
+    std::vector<action> possibleActionsF();
+    std::vector<action> possibleActionsE();
     state();
     ~state();
     state(const state & rhs);
@@ -21,6 +21,8 @@ class state
     state & operator = (const cpp_client::chess::Game & g);
     state(const cpp_client::chess::Game & g);
     state operator + (const action & a) const;
+    void applyAction(const action & a);
+    void reverseAction(const action & a);
     void deleteData();
     float getValue() const;
     bool terminal() const;
@@ -36,6 +38,6 @@ class state
     int px; //enpassant target cordinates
     int py; //enpassant target cordinates
     bool can_EnPassant; //is enpassant possible
-    int lastCapture;
+    std::vector<int> lastCapture;
     std::vector<action> previous_actions;
 };

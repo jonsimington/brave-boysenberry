@@ -69,10 +69,12 @@ bool AI::run_turn()
   if(game->moves.size() > 0)
   {
     action lastMove(game->moves[game->moves.size() - 1]);
-    currentState = currentState + lastMove;
+    currentState.applyAction(lastMove);
   }
-  auto theAction = IDDLMS(currentState, 3);
-  currentState = currentState + theAction;
+  currentState.m_board.print();
+  std::cout << std::endl;
+  auto theAction = IDDLMS(currentState, 4);
+  currentState.applyAction(theAction);
   modifyGame(player, theAction);
 
     

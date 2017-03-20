@@ -26,6 +26,7 @@ class mypiece
     virtual mypiece* clone() const; //clones the piece sending a ptr that points to the new piece
     virtual float getValue() const;
     void copyValues(const mypiece* rhs); //copies the values from the rhs piece
+    bool hasMoved() const;
     bool inUse() const;
     std::string getType() const;
     virtual int getDirection() const; //used for pawn if 0 its white if 1 its black
