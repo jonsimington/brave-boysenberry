@@ -389,7 +389,7 @@ float state::getValue() const
   float value = 0;
   if(isDraw())
   {
-    return -1;
+    return 0;
   }
   for(auto it = m_pieces.cbegin(); it != m_pieces.cend(); it++)
   {
@@ -451,7 +451,7 @@ bool state::isDraw() const
   }
   if(previous_actions.size() >= 8 && lc >= 8)
   {
-    if(lc >= 50)
+    if(lc >= 100)
     {
       return true;
     }
