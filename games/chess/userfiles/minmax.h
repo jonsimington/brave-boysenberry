@@ -4,8 +4,8 @@
 #include <algorithm>
 
 action MinMaxSearch(state & s, const int depth);
-float max_value(state & s, float & alpha, float & beta, const int depth);
-float min_value(state & s, float & alpha, float & beta, const int depth);
+float max_value(state & s, float alpha, float beta, const int depth);
+float min_value(state & s, float alpha, float beta, const int depth);
 
 //Iterative deepening depth limited min max search
 action IDDLMS(state & s, const int & maxDepth)
@@ -47,11 +47,10 @@ action MinMaxSearch(state & s, const int depth)
       sameScore.push_back(a);
     }
   }
-  
   return sameScore[rand() % sameScore.size()];
 }
 
-float max_value(state & s, float & alpha, float & beta, const int depth)
+float max_value(state & s, float alpha, float beta, const int depth)
 {
   if(depth == 0 || s.terminal())
   {
@@ -82,7 +81,7 @@ float max_value(state & s, float & alpha, float & beta, const int depth)
   return value;
 }
 
-float min_value(state & s, float & alpha, float & beta, const int depth)
+float min_value(state & s, float alpha, float beta, const int depth)
 {
   if(depth == 0 || s.terminal())
   {
