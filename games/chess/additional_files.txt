@@ -8,7 +8,6 @@ userfiles/mypiece.cpp
 userfiles/tile.cpp
 userfiles/board.cpp
 userfiles/state.cpp
-userfiles/node.cpp
 userfiles/pawn.cpp
 userfiles/rook.cpp
 userfiles/bishop.cpp

@@ -28,16 +28,19 @@ class state
     bool terminal() const;
     bool isDraw() const;
     void addToPrevious(const action & a);
+    bool can_EnPassant; //is enpassant possible
+    bool inCheck(const std::vector<mypiece*> & pieces) const;
+    std::vector<action> possibleActions(const std::vector<mypiece*> & pieces);
     
     std::string m_id;
     board m_board; //the board
     std::vector<mypiece*> m_friendlyPieces;
     std::vector<mypiece*> m_enemyPieces;
     std::map<std::string, mypiece*> m_pieces;
-    bool inCheck(const std::vector<mypiece*> & pieces) const;
+    
     int px; //enpassant target cordinates
     int py; //enpassant target cordinates
-    bool can_EnPassant; //is enpassant possible
-    std::vector<int> lastCapture;
-    std::vector<action> previous_actions;
+    
+    std::vector<int> lastCapture; //how many moves ago was there a capture or pawn movement
+    std::vector<action> previous_actions; //previous actions
 };

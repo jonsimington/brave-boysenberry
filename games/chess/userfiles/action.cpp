@@ -74,3 +74,12 @@ bool action::operator != (const action & rhs) const
 {
   return !(*this == rhs);
 }
+
+bool action::operator < (const action & rhs) const
+{
+  if(m_pr == "")
+    return false;
+  if(rhs.m_pr == "") //there is a piece removes lhs
+    return true;
+  return false;
+}

@@ -4,8 +4,8 @@
 #include <algorithm>
 
 action MinMaxSearch(state & s, const int depth);
-float max_value(state & s, const int depth);
-float min_value(state & s, const int depth);
+float max_value(state & s, float & alpha, float & beta, const int depth);
+float min_value(state & s, float & alpha, float & beta, const int depth);
 
 //Iterative deepening depth limited min max search
 action IDDLMS(state & s, const int & maxDepth)
@@ -24,13 +24,17 @@ action IDDLMS(state & s, const int & maxDepth)
 //Minmax search of set depth
 action MinMaxSearch(state & s, const int depth)
 {
+  /*contains actions that have the same hueristic value
+  one random one is returned at the end of the function*/
   std::vector<action> sameScore;
+  float alpha = FLT_MAX * -1;
+  float beta = FLT_MAX;
   auto allActions = s.possibleActionsF();
   float bestActionScore = FLT_MAX * -1;
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    float value = min_value(s, depth - 1);
+    float value = min_value(s, alpha, beta, depth - 1);
     s.reverseAction(a);
     if((value > bestActionScore))
     {
@@ -43,10 +47,11 @@ action MinMaxSearch(state & s, const int depth)
       sameScore.push_back(a);
     }
   }
+  
   return sameScore[rand() % sameScore.size()];
 }
 
-float max_value(state & s, const int depth)
+float max_value(state & s, float & alpha, float & beta, const int depth)
 {
   if(depth == 0 || s.terminal())
   {
@@ -68,13 +73,16 @@ float max_value(state & s, const int depth)
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    value = std::max(value, min_value(s, depth - 1));
+    value = std::max(value, min_value(s, alpha, beta, depth - 1));
     s.reverseAction(a);
+    if(value >= beta)
+      return value;
+    alpha = std::max(alpha, value);
   }
   return value;
 }
 
-float min_value(state & s, const int depth)
+float min_value(state & s, float & alpha, float & beta, const int depth)
 {
   if(depth == 0 || s.terminal())
   {
@@ -96,8 +104,11 @@ float min_value(state & s, const int depth)
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    value = std::min(value, max_value(s, depth - 1));
+    value = std::min(value, max_value(s, alpha, beta, depth - 1));
     s.reverseAction(a);
+    if(value <= alpha)
+      return value;
+    beta = std::min(beta,value);
   }
   return value;
 }

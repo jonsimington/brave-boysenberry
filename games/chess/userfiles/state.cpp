@@ -8,6 +8,7 @@
 #include "queen.h"
 #include <cmath>
 #include <sstream>
+#include <algorithm>
 state::state()
 {
   can_EnPassant = false;
@@ -314,20 +315,20 @@ state state::operator + (const action & a) const
   return result;
 }
 
-std::vector<action> state::possibleActionsF()
+std::vector<action> state::possibleActions(const std::vector<mypiece*> & pieces)
 {
   std::vector<action> allActions;
   std::string kingId;
-  in_check = inCheck(m_friendlyPieces);
-  for(int i = 0; i < m_friendlyPieces.size(); i++)
+  in_check = inCheck(pieces);
+  for(int i = 0; i < pieces.size(); i++)
   {
-    if(m_friendlyPieces[i]->inUse())
+    if(pieces[i]->inUse())
     {
-      m_friendlyPieces[i]->possibleActions(px,py,can_EnPassant,allActions);
+      pieces[i]->possibleActions(px,py,can_EnPassant,allActions);
     }
-    if(m_friendlyPieces[i]->getType() == "King")
+    if(pieces[i]->getType() == "King")
     {
-      kingId = m_friendlyPieces[i]->getId();
+      kingId = pieces[i]->getId();
     }
   }
   for(int i = 0; i < allActions.size();)
@@ -344,40 +345,19 @@ std::vector<action> state::possibleActionsF()
       i++;
     }
   }
+  std::sort(allActions.begin(), allActions.end());
   return allActions;
 }
 
+std::vector<action> state::possibleActionsF()
+{
+  return possibleActions(m_friendlyPieces);
+}
+
+//possible enemy actions
 std::vector<action> state::possibleActionsE()
 {
-  std::vector<action> allActions;
-  std::string kingId;
-  in_check = inCheck(m_enemyPieces);
-  for(int i = 0; i < m_enemyPieces.size(); i++)
-  {
-    if(m_enemyPieces[i]->inUse())
-    {
-      m_enemyPieces[i]->possibleActions(px,py,can_EnPassant,allActions);
-    }
-    if(m_enemyPieces[i]->getType() == "King")
-    {
-      kingId = m_enemyPieces[i]->getId();
-    }
-  }
-  for(int i = 0; i < allActions.size();)
-  {
-    this->applyAction(allActions[i]);
-    if(isUnderAttack(*(m_pieces[kingId]), m_board))
-    {
-      this->reverseAction(allActions[i]);
-      allActions.erase(allActions.begin() + i);
-    }
-    else
-    {
-      this->reverseAction(allActions[i]);
-      i++;
-    }
-  }
-  return allActions;
+  return possibleActions(m_enemyPieces);
 }
 
 void state::deleteData()
@@ -391,6 +371,7 @@ void state::deleteData()
   m_enemyPieces.clear();
 }
 
+//is the king in the pieces in check?
 bool state::inCheck(const std::vector<mypiece*> & pieces) const
 {
   for(int i = 0; i < pieces.size(); i++)
@@ -402,6 +383,7 @@ bool state::inCheck(const std::vector<mypiece*> & pieces) const
   }
 }
 
+//get huerstic value of the current state
 float state::getValue() const
 {
   float value = 0;
@@ -437,6 +419,7 @@ float state::getValue() const
   return value;
 }
 
+//is the state terminal?
 bool state::terminal() const
 {
   if(isDraw())
@@ -453,6 +436,7 @@ bool state::terminal() const
   return false;
 }
 
+//checks for a draw
 bool state::isDraw() const
 {
   //std::cout << previous_actions.size() << "\n";

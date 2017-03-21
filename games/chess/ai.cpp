@@ -73,7 +73,7 @@ bool AI::run_turn()
   }
   currentState.m_board.print();
   std::cout << std::endl;
-  auto theAction = IDDLMS(currentState, 4);
+  auto theAction = IDDLMS(currentState, 6);
   currentState.applyAction(theAction);
   modifyGame(player, theAction);
 
