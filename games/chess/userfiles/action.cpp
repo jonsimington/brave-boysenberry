@@ -61,7 +61,6 @@ action::action(const cpp_client::chess::Move & move)
   {
     m_pr = move->captured->id;
   }
-  m_enPassant = false;
 }
 
 bool action::operator == (const action & rhs) const

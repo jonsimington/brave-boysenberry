@@ -27,9 +27,9 @@ state::~state()
 state & state::operator = (const state & rhs)
 {
   previous_actions = rhs.previous_actions;
+  lastCapture = rhs.lastCapture;
   m_board.reset();
   deleteData();
-  lastCapture = rhs.lastCapture;
   for(auto it = rhs.m_pieces.begin(); it != rhs.m_pieces.end(); it++)
   {
     auto p = m_pieces[it->first] = it->second->clone();
@@ -191,8 +191,9 @@ void state::applyAction(const action & a)
   auto it = m_pieces.find(a.m_id);
   if(a.m_pr != "")
   {
+    auto ij = m_pieces.find(a.m_pr);
     m_pieces[a.m_pr]->remove(); //m_inUse = false;
-    m_board[a.m_ex][a.m_ey].release();
+    m_board[ij->second->getX()][ij->second->getY()].release();
   }
   m_board[a.m_sx][a.m_sy].release();
   it->second->move(a.m_ex, a.m_ey);
