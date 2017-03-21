@@ -51,6 +51,7 @@ action::action(const mypiece & pm, const mypiece & pr, bool enPassant)
 
 action::action(const cpp_client::chess::Move & move)
 {
+  m_enPassant = false;
   m_sx = fileToInt(move->from_file);
   m_sy = move->from_rank - 1;
   m_ex = fileToInt(move->to_file);
@@ -60,6 +61,11 @@ action::action(const cpp_client::chess::Move & move)
   if(move->captured != nullptr)
   {
     m_pr = move->captured->id;
+    if(move->captured->type == "Pawn" && (move->to_file != move->captured->file ||
+    move->to_rank != move->captured->rank))
+    {
+      m_enPassant = true;
+    }
   }
 }
 
