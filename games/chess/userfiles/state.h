@@ -27,7 +27,6 @@ class state
     float getValue() const;
     bool terminal() const;
     bool isDraw() const;
-    void addToPrevious(const action & a);
     bool can_EnPassant; //is enpassant possible
     bool inCheck(const std::vector<mypiece*> & pieces) const;
     std::vector<action> possibleActions(const std::vector<mypiece*> & pieces);

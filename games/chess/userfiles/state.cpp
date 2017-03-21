@@ -26,7 +26,6 @@ state::~state()
 
 state & state::operator = (const state & rhs)
 {
-  lastCapture = rhs.lastCapture;
   previous_actions = rhs.previous_actions;
   m_board.reset();
   deleteData();
@@ -239,7 +238,7 @@ void state::applyAction(const action & a)
   {
     if(lastCapture.size() == 0)
     {
-      lastCapture.push_back(0); 
+      lastCapture.push_back(1); 
     }
     else
     {
@@ -250,7 +249,7 @@ void state::applyAction(const action & a)
   {
     lastCapture.push_back(0);
   }
-  addToPrevious(a); 
+  previous_actions.push_back(a);
 }
 
 void state::reverseAction(const action & a)
@@ -389,7 +388,7 @@ float state::getValue() const
   float value = 0;
   if(isDraw())
   {
-    return 0;
+    return -1;
   }
   for(auto it = m_pieces.cbegin(); it != m_pieces.cend(); it++)
   {
@@ -465,9 +464,4 @@ bool state::isDraw() const
   {
     return false;
   }
-}
-
-void state::addToPrevious(const action & a)
-{
-  previous_actions.push_back(a);
 }
