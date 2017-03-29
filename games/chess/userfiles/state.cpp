@@ -36,10 +36,18 @@ state & state::operator = (const state & rhs)
     if(p->isFriendly())
     {
       m_friendlyPieces.push_back(p);
+      if(p->getType() == "King")
+      {
+        friendlyKing = p;
+      }
     }
     else
     {
       m_enemyPieces.push_back(p);
+      if(p->getType() == "King")
+      {
+        enemyKing = p;
+      }
     }
     if(p->inUse())
     {
@@ -124,6 +132,14 @@ state & state::operator = (const cpp_client::chess::Game & g)
     {
       m_pieces[id] = new king(x, y,id,m_board,friendly,true);
       pieces->push_back(m_pieces[id]);
+      if(friendly)
+      {
+        friendlyKing = m_pieces[id];
+      }
+      else
+      {
+        enemyKing = m_pieces[id];
+      }
     }
     else if(g->pieces[i]->type == "Queen")
     {
@@ -234,7 +250,7 @@ void state::applyAction(const action & a)
     rook->move(newx, a.m_sy);
     m_board[newx][a.m_sy].move(*rook);
   }
-  if(a.m_pr == "" && a.m_promoteType == "" && it->second->getType() != "Pawn")
+  if(a.m_pr == "" && it->second->getType() != "Pawn")
   {
     if(lastCapture.size() == 0)
     {
@@ -318,23 +334,28 @@ state state::operator + (const action & a) const
 std::vector<action> state::possibleActions(const std::vector<mypiece*> & pieces)
 {
   std::vector<action> allActions;
-  std::string kingId;
-  in_check = inCheck(pieces);
+  mypiece* kingptr;
+  bool friendly = pieces[0]->isFriendly();
+  in_check = inCheck(friendly);
+  if(friendly)
+  {
+    kingptr = friendlyKing;
+  }
+  else
+  {
+    kingptr = enemyKing;
+  }
   for(int i = 0; i < pieces.size(); i++)
   {
     if(pieces[i]->inUse())
     {
-      pieces[i]->possibleActions(*this,allActions);
-    }
-    if(pieces[i]->getType() == "King")
-    {
-      kingId = pieces[i]->getId();
+      pieces[i]->possibleActions(*this, allActions);
     }
   }
   for(int i = 0; i < allActions.size();)
   {
     this->applyAction(allActions[i]);
-    if(isUnderAttack(*(m_pieces[kingId]), m_board))
+    if(isUnderAttack(*kingptr, m_board))
     {
       this->reverseAction(allActions[i]);
       allActions.erase(allActions.begin() + i);
@@ -371,14 +392,15 @@ void state::deleteData()
 }
 
 //is the king in the pieces in check?
-bool state::inCheck(const std::vector<mypiece*> & pieces) const
+bool state::inCheck(const bool friendly) const
 {
-  for(int i = 0; i < pieces.size(); i++)
+  if(friendly)
   {
-    if(pieces[i]->getType() == "King")
-    {
-      return isUnderAttack(*pieces[i], m_board);
-    }
+    return isUnderAttack(*friendlyKing, m_board);
+  }
+  else
+  {
+    return isUnderAttack(*enemyKing, m_board);
   }
 }
 
@@ -403,17 +425,6 @@ float state::getValue() const
         value -= it->second->getValue();
       }
     }
-    else if(it->second->getType() == "King")
-    {
-      if(it->second->isFriendly())
-      {
-        return -10000;
-      }
-      else
-      {
-        return 10000;
-      }
-    }
   }
   return value;
 }
@@ -424,13 +435,6 @@ bool state::terminal() const
   if(isDraw())
   {
     return true;
-  }
-  for(auto it = m_pieces.cbegin(); it != m_pieces.cend(); it++)
-  {
-    if(it->second->getType() == "King" && !it->second->inUse())
-    {
-      return true;
-    }
   }
   return false;
 }

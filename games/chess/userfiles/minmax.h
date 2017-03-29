@@ -1,16 +1,30 @@
 #pragma once
 #include "state.h"
+#include <string>
 #include <cfloat>
 #include <algorithm>
 #include <ctime>
 #include <chrono>
 #include <map>
+#include <unordered_map>
 
 action MinMaxSearch(state & s, const int depth);
 float max_value(state & s, float alpha, float beta, const int depth);
 float min_value(state & s, float alpha, float beta, const int depth);
 int getHistory(const action & a);
-std::map<action, int> historyTable;
+
+struct myHash
+{
+  unsigned long operator() (const action & a) const
+  {
+    unsigned long h1 = std::hash<std::string>()(a.m_id);
+    unsigned long h2 = a.m_sx + (a.m_sy << 4) + (a.m_ex << 8) + (a.m_ey << 12);
+    return h1 ^ h2;
+  }
+  
+};
+
+std::unordered_map<action, int, myHash> historyTable;
 
 struct ordering
 {
@@ -31,6 +45,7 @@ int getHistory(const action & a)
 
 void addToHistory(const action & a)
 {
+  //std::cout << historyTable.size() << std::endl;
   auto it = historyTable.find(a);
   if(it == historyTable.end())
   {
@@ -106,14 +121,14 @@ action MinMaxSearch(state & s, const int depth)
 
 float max_value(state & s, float alpha, float beta, const int depth)
 {
-  if(depth == 0 || s.terminal())
+  if(depth == 0 || s.isDraw())
   {
    return s.getValue();
   }
   auto allActions = s.possibleActionsF();
   if(allActions.size() == 0)
   {
-    if(s.inCheck(s.m_friendlyPieces))
+    if(s.inCheck(true))
     {
       return -10000; 
     }
@@ -148,14 +163,14 @@ float max_value(state & s, float alpha, float beta, const int depth)
 
 float min_value(state & s, float alpha, float beta, const int depth)
 {
-  if(depth == 0 || s.terminal())
+  if(depth == 0 || s.isDraw())
   {
     return s.getValue();
   }
   auto allActions = s.possibleActionsE();
   if(allActions.size() == 0)
   {
-    if(s.inCheck(s.m_enemyPieces))
+    if(s.inCheck(false))
     {
       return 10000;
     }

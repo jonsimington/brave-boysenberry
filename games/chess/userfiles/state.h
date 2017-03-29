@@ -26,11 +26,13 @@ class state
     bool terminal() const;
     bool isDraw() const;
     bool can_EnPassant; //is enpassant possible
-    bool inCheck(const std::vector<mypiece*> & pieces) const;
+    bool inCheck(const bool friendly) const;
     std::vector<action> possibleActions(const std::vector<mypiece*> & pieces);
     
     std::string m_id;
     board m_board; //the board
+    mypiece* friendlyKing;
+    mypiece* enemyKing;
     std::vector<mypiece*> m_friendlyPieces;
     std::vector<mypiece*> m_enemyPieces;
     std::map<std::string, mypiece*> m_pieces;
