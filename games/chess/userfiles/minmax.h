@@ -9,6 +9,7 @@
 action MinMaxSearch(state & s, const int depth);
 float max_value(state & s, float alpha, float beta, const int depth);
 float min_value(state & s, float alpha, float beta, const int depth);
+int getHistory(const action & a);
 std::map<action, int> historyTable;
 bool winningMove;
 
@@ -16,9 +17,18 @@ struct ordering
 {
   bool operator () (const action & lhs, const action & rhs) const
   {
-    return historyTable[lhs] > historyTable[rhs];
+    return getHistory(lhs) > getHistory(rhs);
   }
 };
+
+int getHistory(const action & a)
+{
+  auto it = historyTable.find(a);
+  if(it == historyTable.end())
+    return 0;
+  else
+    return it->second;
+}
 
 void addToHistory(const action & a)
 {
