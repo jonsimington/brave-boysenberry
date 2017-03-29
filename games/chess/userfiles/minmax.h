@@ -21,7 +21,6 @@ struct myHash
     unsigned long h2 = a.m_sx + (a.m_sy << 3) + (a.m_ex << 6) + (a.m_ey << 9);
     return h1 ^ h2;
   }
-  
 };
 
 std::unordered_map<action, int, myHash> historyTable;
@@ -60,6 +59,11 @@ void addToHistory(const action & a)
 //limit is in seconds
 action IDTLMMS(state & s, const long & limit)
 {
+  if(historyTable.size() >= 500)
+  {
+    historyTable.clear();
+  }
+  std::cout << historyTable.size() << std::endl;
   int currentDepth = 1;
   action a;
   auto start = std::chrono::high_resolution_clock::now();
