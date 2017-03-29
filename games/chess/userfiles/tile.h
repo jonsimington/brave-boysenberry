@@ -1,6 +1,6 @@
 #pragma once
 #include "mypiece.h"
-class mypiece;
+
 class tile
 {
   public:

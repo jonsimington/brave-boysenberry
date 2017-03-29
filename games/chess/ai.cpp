@@ -73,7 +73,7 @@ bool AI::run_turn()
   }
   currentState.m_board.print();
   std::cout << std::endl;
-  auto theAction = MinMaxSearch(currentState, 5);
+  auto theAction = IDTLMMS(currentState, 2);
   currentState.applyAction(theAction);
   modifyGame(player, theAction);
 

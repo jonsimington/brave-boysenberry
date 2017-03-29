@@ -17,9 +17,9 @@ bishop::bishop(const int & x, const int & y, const std::string & id): mypiece(x,
   
 }
 
-void bishop::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
+void bishop::possibleActions(const state & s, std::vector<action> & allActions) const
 {
-  diagonalMoves(this, *m_board, allActions);
+  diagonalMoves(this, s.m_board, allActions);
 }
 
 bishop* bishop::clone() const

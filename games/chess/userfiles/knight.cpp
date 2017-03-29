@@ -19,50 +19,50 @@ knight* knight::clone() const
   return p;
 }
 
-void knight::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
+void knight::possibleActions(const state & s, std::vector<action> & allActions) const
 {
   if(m_y + 2 < boardLength)
   {
     if(m_x + 1 < boardLength)
     {
-      checkToPlace(this, *m_board, m_x + 1, m_y + 2, allActions);
+      checkToPlace(this, s.m_board, m_x + 1, m_y + 2, allActions);
     }
     if(m_x - 1 >= 0)
     {
-      checkToPlace(this, *m_board, m_x - 1, m_y + 2, allActions);
+      checkToPlace(this, s.m_board, m_x - 1, m_y + 2, allActions);
     }
   }
   if(m_y - 2 >= 0)
   {
     if(m_x + 1 < boardLength)
     {
-      checkToPlace(this, *m_board, m_x + 1, m_y - 2, allActions);
+      checkToPlace(this, s.m_board, m_x + 1, m_y - 2, allActions);
     }
     if(m_x - 1 >= 0)
     {
-      checkToPlace(this, *m_board, m_x - 1, m_y - 2, allActions);
+      checkToPlace(this, s.m_board, m_x - 1, m_y - 2, allActions);
     }
   }
   if(m_x + 2 < boardLength)
   {
     if(m_y + 1 < boardLength)
     {
-      checkToPlace(this, *m_board, m_x + 2, m_y + 1, allActions);
+      checkToPlace(this, s.m_board, m_x + 2, m_y + 1, allActions);
     }
     if(m_y - 1 >= 0)
     {
-      checkToPlace(this, *m_board, m_x + 2, m_y - 1, allActions);
+      checkToPlace(this, s.m_board, m_x + 2, m_y - 1, allActions);
     }
   }
   if(m_x - 2 >= 0)
   {
     if(m_y + 1 < boardLength)
     {
-      checkToPlace(this, *m_board, m_x - 2, m_y + 1, allActions);
+      checkToPlace(this, s.m_board, m_x - 2, m_y + 1, allActions);
     }
     if(m_y - 1 >= 0)
     {
-      checkToPlace(this, *m_board, m_x - 2, m_y - 1, allActions);
+      checkToPlace(this, s.m_board, m_x - 2, m_y - 1, allActions);
     }
   }
 }

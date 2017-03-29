@@ -7,7 +7,6 @@
 #include "knight.h"
 #include <sstream>
 
-
 int fileToInt(const char f)
 {
   return f - 'a';  
@@ -172,7 +171,6 @@ mypiece* changeType(state & s, mypiece* p, const std::string & typeTo)
   }
   newpiece->copyValues(p);
   newpiece->m_type = type;
-  newpiece->m_board = p->m_board;
   delete s.m_pieces[newpiece->getId()];
   s.m_pieces[newpiece->getId()] = newpiece;
   if(newpiece->isFriendly())

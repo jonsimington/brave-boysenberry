@@ -33,7 +33,6 @@ state & state::operator = (const state & rhs)
   for(auto it = rhs.m_pieces.begin(); it != rhs.m_pieces.end(); it++)
   {
     auto p = m_pieces[it->first] = it->second->clone();
-    p->m_board = &m_board;
     if(p->isFriendly())
     {
       m_friendlyPieces.push_back(p);
@@ -315,6 +314,7 @@ state state::operator + (const action & a) const
   return result;
 }
 
+//possible actions for one team's pieces
 std::vector<action> state::possibleActions(const std::vector<mypiece*> & pieces)
 {
   std::vector<action> allActions;
@@ -324,7 +324,7 @@ std::vector<action> state::possibleActions(const std::vector<mypiece*> & pieces)
   {
     if(pieces[i]->inUse())
     {
-      pieces[i]->possibleActions(px,py,can_EnPassant,allActions);
+      pieces[i]->possibleActions(*this,allActions);
     }
     if(pieces[i]->getType() == "King")
     {
@@ -345,7 +345,6 @@ std::vector<action> state::possibleActions(const std::vector<mypiece*> & pieces)
       i++;
     }
   }
-  std::sort(allActions.begin(), allActions.end());
   return allActions;
 }
 

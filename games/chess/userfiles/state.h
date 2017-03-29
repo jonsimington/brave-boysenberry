@@ -1,13 +1,11 @@
 #pragma once
 #include "../game.hpp"
 #include "../../../joueur/src/base_ai.hpp"
-#include "board.h"
 #include <vector>
 #include <map>
-#include "utility.h"
-class action;
+#include "board.h"
 class mypiece;
-class board;
+class action;
 
 class state
 {

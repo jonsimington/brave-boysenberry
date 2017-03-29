@@ -11,9 +11,9 @@ mypiece(x,y,id,b,friendly,hasMoved)
   m_type = "Rook";
 }
 
-void rook::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
+void rook::possibleActions(const state & s, std::vector<action> & allActions) const
 {
-  straightMoves(this, *m_board, allActions);
+  straightMoves(this, s.m_board, allActions);
 }
 
 rook* rook::clone() const

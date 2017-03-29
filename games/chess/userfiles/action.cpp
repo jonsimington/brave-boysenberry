@@ -72,7 +72,8 @@ action::action(const cpp_client::chess::Move & move)
 bool action::operator == (const action & rhs) const
 {
   return m_sx == rhs.m_sx &&
-         m_sy == rhs.m_sy && m_ex == rhs.m_ex && m_ey == rhs.m_ey;
+         m_sy == rhs.m_sy && m_ex == rhs.m_ex && m_ey == rhs.m_ey &&
+         m_id == m_pr;
 }
 
 bool action::operator != (const action & rhs) const
@@ -82,9 +83,27 @@ bool action::operator != (const action & rhs) const
 
 bool action::operator < (const action & rhs) const
 {
-  if(m_pr == "")
+  if(m_id < rhs.m_id)
+    return true;
+  if(m_id > rhs.m_id)
     return false;
-  if(rhs.m_pr == "") //there is a piece removes lhs
+  if(m_sx < rhs.m_sx)
+    return true;
+  if(m_sx > rhs.m_sx)
+    return false;
+  if(m_sy < rhs.m_sy)
+    return true;
+  if(m_sy > rhs.m_sy)
+    return false;
+  if(m_ex < rhs.m_ex)
+    return true;
+  if(m_ex > rhs.m_ex)
+    return false;
+  if(m_ey < rhs.m_ey)
+    return true;
+  if(m_ey > rhs.m_ey)
+    return false;
+  if(m_pr < rhs.m_pr)
     return true;
   return false;
 }

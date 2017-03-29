@@ -2,10 +2,55 @@
 #include "state.h"
 #include <cfloat>
 #include <algorithm>
+#include <ctime>
+#include <chrono>
+#include <map>
 
 action MinMaxSearch(state & s, const int depth);
 float max_value(state & s, float alpha, float beta, const int depth);
 float min_value(state & s, float alpha, float beta, const int depth);
+std::map<action, int> historyTable;
+
+struct ordering
+{
+  bool operator () (const action & lhs, const action & rhs) const
+  {
+    return historyTable[lhs] > historyTable[rhs];
+  }
+};
+
+void addToHistory(const action & a)
+{
+  auto it = historyTable.find(a);
+  if(it == historyTable.end())
+  {
+    historyTable[a] = 1;
+  }
+  else
+  {
+    it->second++;
+  }
+}
+
+//limit is in seconds
+action IDTLMMS(state & s, const long & limit)
+{
+  int currentDepth = 1;
+  action a;
+  auto start = std::chrono::high_resolution_clock::now();
+  long timeElapsed = 0;
+  while(timeElapsed < limit)
+  {
+    std::cout << "DepthStart: " << currentDepth << std::endl;
+    a = MinMaxSearch(s, currentDepth);
+    //addToHistory(a);
+    std::cout << "Depthend: " << currentDepth << std::endl;
+    currentDepth++;
+    timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - start).count();
+    std::cout << timeElapsed << std::endl;
+  }
+  return a;
+}
 
 //Iterative deepening depth limited min max search
 action IDDLMS(state & s, const int & maxDepth)
@@ -21,6 +66,7 @@ action IDDLMS(state & s, const int & maxDepth)
   }
   return a;
 }
+
 //Minmax search of set depth
 action MinMaxSearch(state & s, const int depth)
 {
@@ -30,24 +76,23 @@ action MinMaxSearch(state & s, const int depth)
   float alpha = FLT_MAX * -1;
   float beta = FLT_MAX;
   auto allActions = s.possibleActionsF();
+  std::sort(allActions.begin(), allActions.end(), ordering());
   float bestActionScore = FLT_MAX * -1;
+  action bestAction;
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    float value = min_value(s, alpha, beta, depth - 1);
+    auto value = min_value(s, alpha, beta, depth - 1);
     s.reverseAction(a);
-    if((value > bestActionScore))
+    if(value > bestActionScore)
     {
       bestActionScore = value;
-      sameScore.clear();
-      sameScore.push_back(a);
-    }
-    else if(value == bestActionScore)
-    {
-      sameScore.push_back(a);
+      bestAction = a;
+      alpha = std::max(alpha, value);
     }
   }
-  return sameScore[rand() % sameScore.size()];
+  addToHistory(bestAction);
+  return bestAction;
 }
 
 float max_value(state & s, float alpha, float beta, const int depth)
@@ -56,7 +101,6 @@ float max_value(state & s, float alpha, float beta, const int depth)
   {
    return s.getValue();
   }
-  float value = FLT_MAX * -1;
   auto allActions = s.possibleActionsF();
   if(allActions.size() == 0)
   {
@@ -69,16 +113,28 @@ float max_value(state & s, float alpha, float beta, const int depth)
       return 0;
     }
   }
+  std::sort(allActions.begin(), allActions.end(), ordering());
+  float bestActionScore = FLT_MAX * -1;
+  action bestAction;
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    value = std::max(value, min_value(s, alpha, beta, depth - 1));
+    auto value = min_value(s, alpha, beta, depth - 1);
     s.reverseAction(a);
-    if(value >= beta)
-      return value;
-    alpha = std::max(alpha, value);
+    if(value > bestActionScore)
+    {
+      bestActionScore = value;
+      bestAction = a;
+      if(value >= beta)
+      {
+        addToHistory(a);
+        return value;
+      }
+      alpha = std::max(alpha, value);
+    }
   }
-  return value;
+  addToHistory(bestAction);
+  return bestActionScore;
 }
 
 float min_value(state & s, float alpha, float beta, const int depth)
@@ -87,7 +143,6 @@ float min_value(state & s, float alpha, float beta, const int depth)
   {
     return s.getValue();
   }
-  float value = FLT_MAX;
   auto allActions = s.possibleActionsE();
   if(allActions.size() == 0)
   {
@@ -100,14 +155,26 @@ float min_value(state & s, float alpha, float beta, const int depth)
       return 0;
     }
   }
+  std::sort(allActions.begin(), allActions.end(), ordering());
+  float bestActionScore = FLT_MAX;
+  action bestAction;
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    value = std::min(value, max_value(s, alpha, beta, depth - 1));
+    auto value = max_value(s, alpha, beta, depth - 1);
     s.reverseAction(a);
-    if(value <= alpha)
-      return value;
-    beta = std::min(beta,value);
+    if(value < bestActionScore)
+    {
+      bestActionScore = value;
+      bestAction = a;
+      if(value <= alpha)
+      {
+        addToHistory(a);
+        return value;
+      }
+      beta = std::min(beta,value);
+    }
   }
-  return value;
+  addToHistory(bestAction);
+  return bestActionScore;
 }

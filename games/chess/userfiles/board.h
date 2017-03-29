@@ -1,7 +1,6 @@
 #pragma once
-#include "tile.h"
 #define boardLength 8
-class tile;
+#include "tile.h"
 class board
 {
   public:

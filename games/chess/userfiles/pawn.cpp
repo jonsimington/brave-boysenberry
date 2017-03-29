@@ -12,18 +12,19 @@ mypiece(x,y,id,b,friendly, hasMoved)
   m_direction = direction;
 }
 
-void pawn::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
+void pawn::possibleActions(const state & s, std::vector<action> & allActions) const
 {
+  const board & theBoard = s.m_board;
   bool aheadOccupied;
   int x = m_x - 1;
   int y = lookAhead(1);
-  if(!(*m_board)[m_x][y].occupied())
+  if(!theBoard[m_x][y].occupied())
   {
     if(y == 0 || y == boardLength - 1)
     {
-      for(auto s: upgrade_types)
+      for(auto t: upgrade_types)
       {
-        allActions.push_back(action(*this, m_x, y, s));
+        allActions.push_back(action(*this, m_x, y, t));
       }
     }
     else
@@ -36,47 +37,47 @@ void pawn::possibleActions(const int & px, const int & py, const bool cp, std::v
   {
     aheadOccupied = true;
   }
-  if(x >= 0 && (*m_board)[x][y].occupied() && (*m_board)[x][y].getPiece().isFriendly() != m_friendly)
+  if(x >= 0 && theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != m_friendly)
   {
     if(y == 0 || y == boardLength - 1)
     {
-      for(auto s: upgrade_types)
+      for(auto t: upgrade_types)
       {
-        allActions.push_back(action(*this, (*m_board)[x][y].getPiece(), s));
+        allActions.push_back(action(*this, theBoard[x][y].getPiece(), t));
       }
     }
     else
     {
-      allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
+      allActions.push_back(action(*this, theBoard[x][y].getPiece()));
     }
   }
   x = m_x + 1;
-  if(x < boardLength && (*m_board)[x][y].occupied() && (*m_board)[x][y].getPiece().isFriendly() != m_friendly)
+  if(x < boardLength && theBoard[x][y].occupied() && theBoard[x][y].getPiece().isFriendly() != m_friendly)
   {
     if(y == 0 || y == boardLength - 1)
     {
-      for(auto s: upgrade_types)
+      for(auto t: upgrade_types)
       {
-        allActions.push_back(action(*this, (*m_board)[x][y].getPiece(), s));
+        allActions.push_back(action(*this, theBoard[x][y].getPiece(), t));
       }
     }
     else
     {
-      allActions.push_back(action(*this, (*m_board)[x][y].getPiece()));
+      allActions.push_back(action(*this, theBoard[x][y].getPiece()));
     }
   }
-  if(cp && m_x - 1 >= 0 && px == m_x - 1 && py == y && (*m_board)[m_x - 1][m_y].occupied() && (*m_board)[m_x - 1][m_y].getPiece().isFriendly() != m_friendly)
+  if(s.can_EnPassant && m_x - 1 >= 0 && s.px == m_x - 1 && s.py == y && theBoard[m_x - 1][m_y].occupied() && theBoard[m_x - 1][m_y].getPiece().isFriendly() != m_friendly)
   {
-    allActions.push_back(action(*this, (*m_board)[m_x - 1][m_y].getPiece(), 1));  
+    allActions.push_back(action(*this, theBoard[m_x - 1][m_y].getPiece(), 1));  
   }
-  if(cp && m_x + 1 < boardLength &&  px == m_x + 1 && py == y && (*m_board)[m_x + 1][m_y].occupied() && (*m_board)[m_x + 1][m_y].getPiece().isFriendly() != m_friendly)
+  if(s.can_EnPassant && m_x + 1 < boardLength &&  s.px == m_x + 1 && s.py == y && theBoard[m_x + 1][m_y].occupied() && theBoard[m_x + 1][m_y].getPiece().isFriendly() != m_friendly)
   {
-    allActions.push_back(action(*this, (*m_board)[m_x + 1][m_y].getPiece(), 1));  
+    allActions.push_back(action(*this, theBoard[m_x + 1][m_y].getPiece(), 1));  
   }
   if(!aheadOccupied && !m_hasMoved)
   {
     y = lookAhead(2);
-    if(!(*m_board)[m_x][y].occupied())
+    if(!theBoard[m_x][y].occupied())
     {
       allActions.push_back(action(*this, m_x, y));
     }

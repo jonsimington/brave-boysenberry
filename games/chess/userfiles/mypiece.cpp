@@ -1,4 +1,5 @@
 #include "mypiece.h"
+#include "board.h"
 
 mypiece::mypiece(){;}
 
@@ -15,8 +16,7 @@ mypiece::mypiece(const int & x, const int & y, const std::string & id, board & b
   m_x = x;
   m_y = y;
   m_id = id;
-  m_board = &b;
-  (*m_board)[x][y].move(*this); 
+  b[x][y].move(*this); 
   m_inUse = true;
   m_hasMoved = hasMoved;
 }
@@ -43,7 +43,7 @@ void mypiece::remove()
   m_inUse = false;
 }
 
-void mypiece::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
+void mypiece::possibleActions(const state & s, std::vector<action> & allActions) const
 {
 }
 
@@ -53,7 +53,6 @@ mypiece* mypiece::clone() const
   p->m_inUse = m_inUse;
   p->m_hasMoved = m_hasMoved;
   p->m_type = m_type;
-  p->m_board = nullptr;
   p->m_friendly = m_friendly;
   return p;  
 }
@@ -68,7 +67,6 @@ void mypiece::copyValues(const mypiece* rhs)
     m_y = rhs->m_y;
     m_inUse = rhs->m_inUse;
     m_id = rhs->m_id;
-    m_board = nullptr;
     m_hasMoved = rhs->m_hasMoved;
     m_type = rhs->m_type;
     m_friendly = rhs->m_friendly;

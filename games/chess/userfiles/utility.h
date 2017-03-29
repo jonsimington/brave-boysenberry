@@ -7,9 +7,6 @@
 #include "../game.hpp"
 #include "../../../joueur/src/base_ai.hpp"
 #include "../player.hpp"
-struct action;
-class state;
-class board;
 
 static std::vector<std::string> upgrade_types = {"Queen", "Bishop", "Rook", "Knight"};
 static bool in_check = false;

@@ -18,10 +18,10 @@ queen* queen::clone() const
   return p;
 }
 
-void queen::possibleActions(const int & px, const int & py, const bool cp, std::vector<action> & allActions) const
+void queen::possibleActions(const state & s, std::vector<action> & allActions) const
 {
-  diagonalMoves(this, *m_board, allActions);
-  straightMoves(this, *m_board, allActions);
+  diagonalMoves(this, s.m_board, allActions);
+  straightMoves(this, s.m_board, allActions);
 }
 
 float queen::getValue() const

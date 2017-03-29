@@ -1,10 +1,9 @@
 #pragma once
-#include "mypiece.h"
 #include "../move.cpp"
 #include <string>
-
 class mypiece;
-struct action
+
+class action
 {
   public:
     action();
