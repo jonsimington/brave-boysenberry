@@ -10,6 +10,7 @@ action MinMaxSearch(state & s, const int depth);
 float max_value(state & s, float alpha, float beta, const int depth);
 float min_value(state & s, float alpha, float beta, const int depth);
 std::map<action, int> historyTable;
+bool winningMove;
 
 struct ordering
 {
@@ -35,15 +36,15 @@ void addToHistory(const action & a)
 //limit is in seconds
 action IDTLMMS(state & s, const long & limit)
 {
+  winningMove = false;
   int currentDepth = 1;
   action a;
   auto start = std::chrono::high_resolution_clock::now();
   long timeElapsed = 0;
-  while(timeElapsed < limit)
+  while(timeElapsed < limit && !winningMove)
   {
     std::cout << "DepthStart: " << currentDepth << std::endl;
     a = MinMaxSearch(s, currentDepth);
-    //addToHistory(a);
     std::cout << "Depthend: " << currentDepth << std::endl;
     currentDepth++;
     timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - start).count();
@@ -53,7 +54,7 @@ action IDTLMMS(state & s, const long & limit)
 }
 
 //Iterative deepening depth limited min max search
-action IDDLMS(state & s, const int & maxDepth)
+action IDDLMMS(state & s, const int & maxDepth)
 {
   int currentDepth = 1;
   action a;
@@ -148,7 +149,8 @@ float min_value(state & s, float alpha, float beta, const int depth)
   {
     if(s.inCheck(s.m_enemyPieces))
     {
-      return 10000; 
+      winningMove = true;
+      return 10000;
     }
     else//if they're not in check and there's no move its a draw
     {
