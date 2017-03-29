@@ -73,7 +73,7 @@ bool action::operator == (const action & rhs) const
 {
   return m_sx == rhs.m_sx &&
          m_sy == rhs.m_sy && m_ex == rhs.m_ex && m_ey == rhs.m_ey &&
-         m_id == m_pr;
+         m_id == rhs.m_id;
 }
 
 bool action::operator != (const action & rhs) const
