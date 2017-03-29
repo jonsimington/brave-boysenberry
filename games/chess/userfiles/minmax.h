@@ -18,7 +18,7 @@ struct myHash
   unsigned long operator() (const action & a) const
   {
     unsigned long h1 = std::hash<std::string>()(a.m_id);
-    unsigned long h2 = a.m_sx + (a.m_sy << 4) + (a.m_ex << 8) + (a.m_ey << 12);
+    unsigned long h2 = a.m_sx + (a.m_sy << 3) + (a.m_ex << 6) + (a.m_ey << 9);
     return h1 ^ h2;
   }
   
