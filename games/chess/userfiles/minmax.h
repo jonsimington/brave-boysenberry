@@ -27,7 +27,6 @@ struct myHash
 };
 */
 unsigned int historyTable[64][64] = {0};
-int MAX_DEPTH;
 
 struct ordering
 {
@@ -58,7 +57,6 @@ action IDTLMMS(state & s, const long & limit)
   while(timeElapsed < limit)
   {
     std::cout << "DepthStart: " << currentDepth << std::endl;
-    MAX_DEPTH = currentDepth + 1;
     a = MinMaxSearch(s, currentDepth);
     std::cout << "Depthend: " << currentDepth << std::endl;
     currentDepth++;
@@ -106,7 +104,7 @@ action MinMaxSearch(state & s, const int depth)
       alpha = std::max(alpha, value);
     }
   }
-  addToHistory(bestAction, MAX_DEPTH - depth);
+  addToHistory(bestAction, depth);
   return bestAction;
 }
 
@@ -142,13 +140,13 @@ float max_value(state & s, float alpha, float beta, const int depth)
       bestAction = a;
       if(value >= beta)
       {
-        addToHistory(bestAction, MAX_DEPTH - depth);
+        addToHistory(bestAction, depth);
         return value;
       }
       alpha = std::max(alpha, value);
     }
   }
-  addToHistory(bestAction, MAX_DEPTH - depth);
+  addToHistory(bestAction, depth);
   return bestActionScore;
 }
 
@@ -184,13 +182,13 @@ float min_value(state & s, float alpha, float beta, const int depth)
       bestAction = a;
       if(value <= alpha)
       {
-        addToHistory(bestAction, MAX_DEPTH - depth);
+        addToHistory(bestAction, depth);
         return value;
       }
       beta = std::min(beta,value);
     }
   }
-  addToHistory(bestAction, MAX_DEPTH - depth);
+  addToHistory(bestAction, depth);
   return bestActionScore;
 }
 
@@ -204,8 +202,7 @@ void pondering(const state & s)
   {
     while(true)
     {
-      std::cout << "is pondering" << std::endl;
-      MAX_DEPTH = currentDepth + 1;
+      std::cout << "is pondering: " << currentDepth << std::endl;
       min_valueP(tempState, alpha, beta, currentDepth);
       currentDepth++;
     }
@@ -250,13 +247,13 @@ float max_valueP(state & s, float alpha, float beta, const int depth)
       bestAction = a;
       if(value >= beta)
       {
-        addToHistory(bestAction, MAX_DEPTH - depth);
+        addToHistory(bestAction, depth);
         return value;
       }
       alpha = std::max(alpha, value);
     }
   }
-  addToHistory(bestAction, MAX_DEPTH - depth);
+  addToHistory(bestAction, depth);
   return bestActionScore;
 }
 
@@ -294,12 +291,12 @@ float min_valueP(state & s, float alpha, float beta, const int depth)
       bestAction = a;
       if(value <= alpha)
       {
-        addToHistory(bestAction, MAX_DEPTH - depth);
+        addToHistory(bestAction, depth);
         return value;
       }
       beta = std::min(beta,value);
     }
   }
-  addToHistory(bestAction, MAX_DEPTH - depth);
+  addToHistory(bestAction, depth);
   return bestActionScore;
 }
