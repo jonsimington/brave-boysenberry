@@ -19,6 +19,8 @@ class action
     std::string m_pr; //mypiece id of mypiece removed
     std::string m_promoteType; //what a piece is being promoted to
     std::string m_promoteFrom; //what a piece is being promoted from (i know its always a pawn)
+    unsigned int getHashFrom() const;
+    unsigned int getHashTo() const;
     int m_sx;  //source x location
     int m_sy;  // source y location
     int m_ex;  //end x location

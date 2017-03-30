@@ -12,7 +12,7 @@ action MinMaxSearch(state & s, const int depth);
 float max_value(state & s, float alpha, float beta, const int depth);
 float min_value(state & s, float alpha, float beta, const int depth);
 int getHistory(const action & a);
-
+/*
 struct myHash
 {
   unsigned long operator() (const action & a) const
@@ -22,8 +22,8 @@ struct myHash
     return h1 ^ h2;
   }
 };
-
-std::unordered_map<action, int, myHash> historyTable;
+*/
+unsigned int historyTable[78][78] = {0};
 
 struct ordering
 {
@@ -35,35 +35,18 @@ struct ordering
 
 int getHistory(const action & a)
 {
-  auto it = historyTable.find(a);
-  if(it == historyTable.end())
-    return 0;
-  else
-    return it->second;
+  return historyTable[a.getHashFrom()][a.getHashTo()];
 }
 
 void addToHistory(const action & a)
 {
-  //std::cout << historyTable.size() << std::endl;
-  auto it = historyTable.find(a);
-  if(it == historyTable.end())
-  {
-    historyTable[a] = 1;
-  }
-  else
-  {
-    it->second++;
-  }
+  historyTable[a.getHashFrom()][a.getHashTo()]++;
 }
 
 //limit is in seconds
 action IDTLMMS(state & s, const long & limit)
 {
-  if(historyTable.size() >= 500)
-  {
-    historyTable.clear();
-  }
-  std::cout << historyTable.size() << std::endl;
+  static int counter = 0;
   int currentDepth = 1;
   action a;
   auto start = std::chrono::high_resolution_clock::now();
@@ -76,6 +59,21 @@ action IDTLMMS(state & s, const long & limit)
     currentDepth++;
     timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - start).count();
     std::cout << timeElapsed << std::endl;
+  }
+  if(counter == 4)
+  {
+    for(int i = 0; i < 78; i++)
+    {
+      for(int j = 0; j < 78; j++)
+      {
+        historyTable[i][j] = 0;
+      }
+    }
+    counter = 0;
+  }
+  else
+  {
+    counter++;
   }
   return a;
 }
@@ -100,7 +98,6 @@ action MinMaxSearch(state & s, const int depth)
 {
   /*contains actions that have the same hueristic value
   one random one is returned at the end of the function*/
-  std::vector<action> sameScore;
   float alpha = FLT_MAX * -1;
   float beta = FLT_MAX;
   auto allActions = s.possibleActionsF();

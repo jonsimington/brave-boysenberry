@@ -107,3 +107,13 @@ bool action::operator < (const action & rhs) const
     return true;
   return false;
 }
+
+unsigned int action::getHashFrom() const
+{
+  return m_sx + m_sy * 10;
+}
+    
+unsigned int action::getHashTo() const
+{
+  return m_ex + m_ey * 10;
+}
