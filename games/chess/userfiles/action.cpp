@@ -110,10 +110,10 @@ bool action::operator < (const action & rhs) const
 
 unsigned int action::getHashFrom() const
 {
-  return m_sx + m_sy * 10;
+  return m_sx + m_sy * 8;
 }
     
 unsigned int action::getHashTo() const
 {
-  return m_ex + m_ey * 10;
+  return m_ex + m_ey * 8;
 }

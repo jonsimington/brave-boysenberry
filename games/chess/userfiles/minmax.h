@@ -23,7 +23,7 @@ struct myHash
   }
 };
 */
-unsigned int historyTable[78][78] = {0};
+unsigned int historyTable[64][64] = {0};
 
 struct ordering
 {
@@ -60,11 +60,11 @@ action IDTLMMS(state & s, const long & limit)
     timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - start).count();
     std::cout << timeElapsed << std::endl;
   }
-  if(counter == 4)
+  if(counter >= 5)
   {
-    for(int i = 0; i < 78; i++)
+    for(int i = 0; i < 64; i++)
     {
-      for(int j = 0; j < 78; j++)
+      for(int j = 0; j < 64; j++)
       {
         historyTable[i][j] = 0;
       }
