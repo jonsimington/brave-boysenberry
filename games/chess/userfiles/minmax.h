@@ -11,7 +11,10 @@
 action MinMaxSearch(state & s, const int depth);
 float max_value(state & s, float alpha, float beta, const int depth);
 float min_value(state & s, float alpha, float beta, const int depth);
+float min_valueP(state & s, float alpha, float beta, const int depth);
+float max_valueP(state & s, float alpha, float beta, const int depth);
 int getHistory(const action & a);
+bool MYTURN;
 /*
 struct myHash
 {
@@ -55,7 +58,7 @@ action IDTLMMS(state & s, const long & limit)
   while(timeElapsed < limit)
   {
     std::cout << "DepthStart: " << currentDepth << std::endl;
-    MAX_DEPTH = currentDepth;
+    MAX_DEPTH = currentDepth + 1;
     a = MinMaxSearch(s, currentDepth);
     std::cout << "Depthend: " << currentDepth << std::endl;
     currentDepth++;
@@ -103,6 +106,7 @@ action MinMaxSearch(state & s, const int depth)
       alpha = std::max(alpha, value);
     }
   }
+  addToHistory(bestAction, MAX_DEPTH - depth);
   return bestAction;
 }
 
@@ -173,6 +177,116 @@ float min_value(state & s, float alpha, float beta, const int depth)
   {
     s.applyAction(a);
     auto value = max_value(s, alpha, beta, depth - 1);
+    s.reverseAction(a);
+    if(value < bestActionScore)
+    {
+      bestActionScore = value;
+      bestAction = a;
+      if(value <= alpha)
+      {
+        addToHistory(bestAction, MAX_DEPTH - depth);
+        return value;
+      }
+      beta = std::min(beta,value);
+    }
+  }
+  addToHistory(bestAction, MAX_DEPTH - depth);
+  return bestActionScore;
+}
+
+void pondering(const state & s)
+{
+  state tempState = s;
+  int currentDepth = 1;
+  float alpha = FLT_MAX * -1;
+  float beta = FLT_MAX;
+  try
+  {
+    while(true)
+    {
+      std::cout << "is pondering" << std::endl;
+      MAX_DEPTH = currentDepth + 1;
+      min_valueP(tempState, alpha, beta, currentDepth);
+      currentDepth++;
+    }
+  }
+  catch(int i)
+  {
+    
+  }
+}
+
+float max_valueP(state & s, float alpha, float beta, const int depth)
+{
+  if(MYTURN)
+    throw 0;
+  if(depth == 0 || s.isDraw())
+  {
+   return s.getValue();
+  }
+  auto allActions = s.possibleActionsF();
+  if(allActions.size() == 0)
+  {
+    if(s.inCheck(true))
+    {
+      return -10000; 
+    }
+    else//if they're not in check and there's no move's it's a draw
+    {
+      return 0;
+    }
+  }
+  std::sort(allActions.begin(), allActions.end(), ordering());
+  float bestActionScore = FLT_MAX * -1;
+  action bestAction;
+  for(const auto & a: allActions)
+  {
+    s.applyAction(a);
+    auto value = min_valueP(s, alpha, beta, depth - 1);
+    s.reverseAction(a);
+    if(value > bestActionScore)
+    {
+      bestActionScore = value;
+      bestAction = a;
+      if(value >= beta)
+      {
+        addToHistory(bestAction, MAX_DEPTH - depth);
+        return value;
+      }
+      alpha = std::max(alpha, value);
+    }
+  }
+  addToHistory(bestAction, MAX_DEPTH - depth);
+  return bestActionScore;
+}
+
+float min_valueP(state & s, float alpha, float beta, const int depth)
+{
+  if(MYTURN)
+    throw 0;
+  if(depth == 0 || s.isDraw())
+  {
+    return s.getValue();
+  }
+  auto allActions = s.possibleActionsE();
+  if(allActions.size() == 0)
+  {
+    if(s.inCheck(false))
+    {
+      return 10000;
+    }
+    else//if they're not in check and there's no move its a draw
+    {
+      return 0;
+    }
+  }
+  std::sort(allActions.begin(), allActions.end(), ordering());
+  float bestActionScore = FLT_MAX;
+  action bestAction;
+  for(const auto & a: allActions)
+  {
+    s.applyAction(a);
+    auto value = max_valueP(s, alpha, beta, depth - 1);
     s.reverseAction(a);
     if(value < bestActionScore)
     {

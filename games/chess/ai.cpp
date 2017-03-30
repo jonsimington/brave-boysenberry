@@ -6,7 +6,10 @@
 #include "userfiles/state.h"
 #include "userfiles/minmax.h"
 #include <ctime>
+#include <thread>
+#include <exception>
 static state currentState;
+static std::thread pthread;
 // You can add #includes here for your AI.
 
 namespace cpp_client
@@ -60,6 +63,11 @@ void AI::ended(bool won, const std::string& reason)
 /// <returns>Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.</returns>
 bool AI::run_turn()
 {
+  MYTURN = true;
+  if(pthread.joinable())
+  {
+    pthread.join();
+  }
   if(game->moves.size() > 0)
   {
     std::cout << "Opponent's Last Move: '" << game->moves[game->moves.size() - 1]->san << "'" << std::endl;
@@ -76,15 +84,10 @@ bool AI::run_turn()
   auto theAction = IDTLMMS(currentState, 2);
   currentState.applyAction(theAction);
   modifyGame(player, theAction);
-
-    
-    // 2) print the opponent's last move to the console
-
-    // 3) print how much time remaining this AI has to calculate moves
-    std::cout << "Time Remaining: " << player->time_remaining << " ns" << std::endl;
-
-    // 4) make a random (and probably invalid) move.
-    return true; // to signify we are done with our turn.
+  std::cout << "Time Remaining: " << player->time_remaining << " ns" << std::endl;
+  MYTURN = false;
+  pthread = std::thread(pondering, currentState);
+  return true; // to signify we are done with our turn.
 }
 
 /// <summary>

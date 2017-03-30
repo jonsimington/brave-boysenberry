@@ -82,6 +82,7 @@ state & state::operator = (const cpp_client::chess::Game & g)
     int x = fileToInt(g->pieces[i]->file);
     int y = g->pieces[i]->rank - 1;
     std::string id = g->pieces[i]->id;
+    std::cout << id << std::endl;
     bool hasMoved = g->pieces[i]->has_moved;
     if(g->pieces[i]->type == "Pawn")
     {
