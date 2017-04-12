@@ -34,9 +34,12 @@ std::string AI::get_name() const
 /// </summary>
 void AI::start()
 {
+  std::cout << "Iinitializing game...." << std::endl;
   currentState.m_id = player->id;
   currentState = game;
+  setTables();
   srand(time(NULL));
+  std::cout << "done" << std::endl;
 }
 
 /// <summary>
@@ -54,7 +57,7 @@ void AI::game_updated()
 /// <param name="reason">An explanation for why you either won or lost</param>
 void AI::ended(bool won, const std::string& reason)
 {
-    // You can do any cleanup of your AI here.  The program ends when this function returns.
+  // You can do any cleanup of your AI here.  The program ends when this function returns.
 }
 
 /// <summary>
@@ -63,6 +66,7 @@ void AI::ended(bool won, const std::string& reason)
 /// <returns>Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.</returns>
 bool AI::run_turn()
 {
+  std::cout << "MyTurn" << std::endl;
   MYTURN = true;
   if(pthread.joinable())
   {

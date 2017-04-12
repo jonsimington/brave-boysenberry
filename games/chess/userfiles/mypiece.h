@@ -13,6 +13,7 @@ class mypiece
     mypiece(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved);
     void place(const int & x, const int & y);
     bool operator < (const mypiece & rhs) const;
+    unsigned int hashPos() const;
     void move(const int & x, const int & y);
     void remove();
     int getX() const;
@@ -31,8 +32,8 @@ class mypiece
     virtual int getDirection() const; //used for pawn if 0 its white if 1 its black
     bool m_hasMoved; //has the peice moved
     bool m_friendly; //is the piece myn
-    int m_x; //x cordinate
-    int m_y; //y cordinate
+    char m_x; //x cordinate
+    char m_y; //y cordinate
     bool m_inUse; //if the piece is in use
     std::string m_id; //the piece id
     std::string m_type; //the type id

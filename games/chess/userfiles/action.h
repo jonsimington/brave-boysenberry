@@ -21,10 +21,10 @@ class action
     std::string m_promoteFrom; //what a piece is being promoted from (i know its always a pawn)
     unsigned int getHashFrom() const;
     unsigned int getHashTo() const;
-    int m_sx;  //source x location
-    int m_sy;  // source y location
-    int m_ex;  //end x location
-    int m_ey;  //end y location
+    char m_sx;  //source x location
+    char m_sy;  // source y location
+    char m_ex;  //end x location
+    char m_ey;  //end y location
     bool m_enPassant; //is the move using enPassant?
     bool m_firstMove; //is it the piece's first move?
 };

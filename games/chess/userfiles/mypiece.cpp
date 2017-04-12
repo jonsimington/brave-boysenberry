@@ -38,6 +38,11 @@ bool mypiece::operator < (const mypiece & rhs) const
   return m_id < rhs.m_id;
 }
 
+unsigned int mypiece::hashPos() const
+{
+  return m_x + 8 * m_y;
+}
+
 void mypiece::remove()
 {
   m_inUse = false;

@@ -1,12 +1,11 @@
 #pragma once
 #include "state.h"
-#include <string>
+#include "transtable.h"
 #include <cfloat>
 #include <algorithm>
 #include <ctime>
 #include <chrono>
-#include <map>
-#include <unordered_map>
+#include <cmath>
 
 action MinMaxSearch(state & s, const int depth);
 float max_value(state & s, float alpha, float beta, const int depth);
@@ -14,18 +13,8 @@ float min_value(state & s, float alpha, float beta, const int depth);
 float min_valueP(state & s, float alpha, float beta, const int depth);
 float max_valueP(state & s, float alpha, float beta, const int depth);
 int getHistory(const action & a);
+
 bool MYTURN;
-/*
-struct myHash
-{
-  unsigned long operator() (const action & a) const
-  {
-    unsigned long h1 = std::hash<std::string>()(a.m_id);
-    unsigned long h2 = a.m_sx + (a.m_sy << 3) + (a.m_ex << 6) + (a.m_ey << 9);
-    return h1 ^ h2;
-  }
-};
-*/
 unsigned int historyTable[64][64] = {0};
 
 struct ordering
@@ -105,11 +94,28 @@ action MinMaxSearch(state & s, const int depth)
     }
   }
   addToHistory(bestAction, depth);
+  addEntry(s, true, depth, bestActionScore, false);
   return bestAction;
 }
 
 float max_value(state & s, float alpha, float beta, const int depth)
 {
+  //std::cout << "max\n";
+  float bestActionScore = FLT_MAX * -1;
+  bool isPrune;
+  float score;
+  if(check(s, true, depth, score, isPrune))
+  {
+    if(!isPrune)
+    {
+      return score;
+    }
+    else
+    {
+      //bestActionScore = score;
+      alpha = score;
+    }
+  }
   if(depth == 0 || s.isDraw())
   {
    return s.getValue();
@@ -127,7 +133,6 @@ float max_value(state & s, float alpha, float beta, const int depth)
     }
   }
   std::sort(allActions.begin(), allActions.end(), ordering());
-  float bestActionScore = FLT_MAX * -1;
   action bestAction;
   for(const auto & a: allActions)
   {
@@ -141,17 +146,36 @@ float max_value(state & s, float alpha, float beta, const int depth)
       if(value >= beta)
       {
         addToHistory(bestAction, depth);
+        addEntry(s, true, depth, bestActionScore, true);
         return value;
       }
       alpha = std::max(alpha, value);
     }
   }
   addToHistory(bestAction, depth);
+  addEntry(s, true, depth, bestActionScore, false);
+  //std::cout << "end max\n";
   return bestActionScore;
 }
 
 float min_value(state & s, float alpha, float beta, const int depth)
 {
+  //std::cout << "min\n";
+  float bestActionScore = FLT_MAX;
+  bool isPrune;
+  float score;
+  if(check(s, false, depth, score, isPrune))
+  {
+    if(!isPrune)
+    {
+      return score;
+    }
+    else
+    {
+      //bestActionScore = score;
+      beta = score;
+    }
+  }
   if(depth == 0 || s.isDraw())
   {
     return s.getValue();
@@ -169,7 +193,6 @@ float min_value(state & s, float alpha, float beta, const int depth)
     }
   }
   std::sort(allActions.begin(), allActions.end(), ordering());
-  float bestActionScore = FLT_MAX;
   action bestAction;
   for(const auto & a: allActions)
   {
@@ -183,12 +206,15 @@ float min_value(state & s, float alpha, float beta, const int depth)
       if(value <= alpha)
       {
         addToHistory(bestAction, depth);
+        addEntry(s, false, depth, bestActionScore, true);
         return value;
       }
       beta = std::min(beta,value);
     }
   }
   addToHistory(bestAction, depth);
+  addEntry(s, false, depth, bestActionScore, false);
+  //std::cout << "end min\n";
   return bestActionScore;
 }
 
@@ -217,6 +243,21 @@ float max_valueP(state & s, float alpha, float beta, const int depth)
 {
   if(MYTURN)
     throw 0;
+  float bestActionScore = FLT_MAX * -1;
+  bool isPrune;
+  float score;
+  if(check(s, true, depth, score, isPrune))
+  {
+    if(!isPrune)
+    {
+      return score;
+    }
+    else
+    {
+      //bestActionScore = score;
+      alpha = score;
+    }
+  }
   if(depth == 0 || s.isDraw())
   {
    return s.getValue();
@@ -234,7 +275,6 @@ float max_valueP(state & s, float alpha, float beta, const int depth)
     }
   }
   std::sort(allActions.begin(), allActions.end(), ordering());
-  float bestActionScore = FLT_MAX * -1;
   action bestAction;
   for(const auto & a: allActions)
   {
@@ -248,12 +288,14 @@ float max_valueP(state & s, float alpha, float beta, const int depth)
       if(value >= beta)
       {
         addToHistory(bestAction, depth);
+        addEntry(s, true, depth, bestActionScore, true);
         return value;
       }
       alpha = std::max(alpha, value);
     }
   }
   addToHistory(bestAction, depth);
+  addEntry(s, true, depth, bestActionScore, false);
   return bestActionScore;
 }
 
@@ -261,6 +303,21 @@ float min_valueP(state & s, float alpha, float beta, const int depth)
 {
   if(MYTURN)
     throw 0;
+  float bestActionScore = FLT_MAX;
+  bool isPrune;
+  float score;
+  if(check(s, false, depth, score, isPrune))
+  {
+    if(!isPrune)
+    {
+      return score;
+    }
+    else
+    {
+      //bestActionScore = score;
+      beta = score;
+    }
+  }
   if(depth == 0 || s.isDraw())
   {
     return s.getValue();
@@ -278,7 +335,6 @@ float min_valueP(state & s, float alpha, float beta, const int depth)
     }
   }
   std::sort(allActions.begin(), allActions.end(), ordering());
-  float bestActionScore = FLT_MAX;
   action bestAction;
   for(const auto & a: allActions)
   {
@@ -292,11 +348,13 @@ float min_valueP(state & s, float alpha, float beta, const int depth)
       if(value <= alpha)
       {
         addToHistory(bestAction, depth);
+        addEntry(s, false, depth, bestActionScore, true);
         return value;
       }
       beta = std::min(beta,value);
     }
   }
   addToHistory(bestAction, depth);
+  addEntry(s, false, depth, bestActionScore, false);
   return bestActionScore;
 }
