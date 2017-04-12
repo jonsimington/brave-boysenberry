@@ -6,10 +6,10 @@
 #include "userfiles/state.h"
 #include "userfiles/minmax.h"
 #include <ctime>
-#include <thread>
+//#include <thread>
 #include <exception>
 static state currentState;
-static std::thread pthread;
+//static std::thread pthread;
 // You can add #includes here for your AI.
 
 namespace cpp_client
@@ -68,10 +68,10 @@ bool AI::run_turn()
 {
   std::cout << "MyTurn" << std::endl;
   MYTURN = true;
-  if(pthread.joinable())
-  {
-    pthread.join();
-  }
+  //if(pthread.joinable())
+  //{
+    //pthread.join();
+  //}
   if(game->moves.size() > 0)
   {
     std::cout << "Opponent's Last Move: '" << game->moves[game->moves.size() - 1]->san << "'" << std::endl;
@@ -90,7 +90,7 @@ bool AI::run_turn()
   modifyGame(player, theAction);
   std::cout << "Time Remaining: " << player->time_remaining << " ns" << std::endl;
   MYTURN = false;
-  pthread = std::thread(pondering, currentState);
+  //pthread = std::thread(pondering, currentState);
   return true; // to signify we are done with our turn.
 }
 
