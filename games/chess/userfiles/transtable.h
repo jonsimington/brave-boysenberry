@@ -72,8 +72,8 @@ unsigned long long int getHash(const state & s, const bool move)
         kcc = !it->second->hasMoved();
         type = 5;
       }
+      hashValue ^= ZOBTABLE[it->second->isFriendly()][type][it->second->hashPos()];
     }
-    hashValue ^= ZOBTABLE[it->second->isFriendly()][type][it->second->hashPos()];
   }
   if(kcc)
   {
