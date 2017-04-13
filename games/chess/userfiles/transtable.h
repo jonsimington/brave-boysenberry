@@ -26,8 +26,8 @@ entry TT[TTSIZE];
 void getRand64(unsigned long long int & value)
 {
    //std::cout << "getting rand\n";
-   static std::random_device rd; 
-   static std::mt19937_64 e2(rd());
+   //static std::random_device rd; 
+   static std::mt19937_64 e2(57381323);
    static std::uniform_int_distribution<unsigned long long int> dist(std::llround(std::pow(2,63)), std::llround(std::pow(2,64)) - 1);
    value = dist(e2);
    std::cout << value << std::endl;
