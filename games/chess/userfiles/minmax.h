@@ -1,6 +1,7 @@
 #pragma once
 #include "state.h"
 #include "transtable.h"
+#include "historyTable.h"
 #include <cfloat>
 #include <algorithm>
 #include <ctime>
@@ -12,28 +13,8 @@ float max_value(state & s, float alpha, float beta, const int depth);
 float min_value(state & s, float alpha, float beta, const int depth);
 float min_valueP(state & s, float alpha, float beta, const int depth);
 float max_valueP(state & s, float alpha, float beta, const int depth);
-int getHistory(const action & a);
 
 bool MYTURN;
-unsigned int historyTable[64][64] = {0};
-
-struct ordering
-{
-  bool operator () (const action & lhs, const action & rhs) const
-  {
-    return getHistory(lhs) > getHistory(rhs);
-  }
-};
-
-int getHistory(const action & a)
-{
-  return historyTable[a.getHashFrom()][a.getHashTo()];
-}
-
-void addToHistory(const action & a, const int & depth)
-{
-  historyTable[a.getHashFrom()][a.getHashTo()] += depth * depth;
-}
 
 //limit is in seconds
 action IDTLMMS(state & s, const long & limit)
@@ -54,13 +35,7 @@ action IDTLMMS(state & s, const long & limit)
   }
   if(counter >= 5)
   {
-    for(int i = 0; i < 64; i++)
-    {
-      for(int j = 0; j < 64; j++)
-      {
-        historyTable[i][j] = 0;
-      }
-    }
+    clearHistoryTable();
     counter = 0;
   }
   else

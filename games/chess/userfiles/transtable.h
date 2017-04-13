@@ -1,6 +1,8 @@
 #pragma once
 #include <random>
 bool checkForCastel(const state & s, const char x, const char y);
+bool checkForKingCastel(const state & s, const char x, const char y);
+unsigned long long int getPieceZooHash(const mypiece * p);
 struct entry
 {
   entry()
@@ -24,8 +26,8 @@ entry TT[TTSIZE];
 void getRand64(unsigned long long int & value)
 {
    //std::cout << "getting rand\n";
-   //static std::random_device rd; 
-   static std::mt19937_64 e2(43209432);
+   static std::random_device rd; 
+   static std::mt19937_64 e2(rd());
    static std::uniform_int_distribution<unsigned long long int> dist(std::llround(std::pow(2,63)), std::llround(std::pow(2,64)) - 1);
    value = dist(e2);
    std::cout << value << std::endl;
@@ -36,7 +38,6 @@ unsigned long long int getHash(const state & s, const bool move)
 {
   //std::cout << "gethash\n";
   unsigned long long int hashValue = 0;
-  bool kcc; //can the king castel?
   hashValue ^= FMOVE[move];  
   if(s.can_EnPassant)
   {
@@ -47,54 +48,30 @@ unsigned long long int getHash(const state & s, const bool move)
     char type;
     if(it->second->inUse())
     {
-      if(it->second->getType() == "Pawn")
-      {
-        type = 0;
-      }
-      else if(it->second->getType() == "Knight")
-      {
-        type = 1;
-      }
-      else if(it->second->getType() == "Bishop")
-      {
-        type = 2;
-      }
-      else if(it->second->getType() == "Rook")
-      {
-        type = 3;
-      }
-      else if(it->second->getType() == "Queen")
-      {
-        type = 4;
-      }
-      else//else king
-      {
-        kcc = !it->second->hasMoved();
-        type = 5;
-      }
-      hashValue ^= ZOBTABLE[it->second->isFriendly()][type][it->second->hashPos()];
+      hashValue ^= getPieceZooHash(it->second);
     }
   }
-  if(kcc)
+  if(checkForKingCastel(s, 4, 0))
   {
-    //std::cout << "checkForCastel\n";
     if(checkForCastel(s, 0, 0))
     {
       hashValue ^= CASTELING[0];
     }
-    if(checkForCastel(s, 0, 7))
+    if(checkForCastel(s, 7, 0))
     {
       hashValue ^= CASTELING[1];
     }
-    if(checkForCastel(s, 7, 0))
+  }
+  if(checkForKingCastel(s, 4, 7))
+  {
+    if(checkForCastel(s, 7, 7))
     {
       hashValue ^= CASTELING[2];
     }
-    if(checkForCastel(s, 7, 7))
+    if(checkForCastel(s, 0, 7))
     {
       hashValue ^= CASTELING[3];
     }
-    //std::cout << "done checkForCastel\n";
   }
   //std::cout << "done gethash\n";
   return hashValue;
@@ -148,6 +125,11 @@ bool checkForCastel(const state & s, const char x, const char y)
   return s.m_board[x][y].occupied() && s.m_board[x][y].getPiece().getType() == "Rook" && !s.m_board[x][y].getPiece().hasMoved();
 }
 
+bool checkForKingCastel(const state & s, const char x, const char y)
+{
+  return s.m_board[x][y].occupied() && s.m_board[x][y].getPiece().getType() == "King" && !s.m_board[x][y].getPiece().hasMoved();
+}
+
 bool check(const state & s, const bool turn, const int & depth, float & eval, bool & prune)
 {
   //std::cout << "checking\n";
@@ -157,7 +139,7 @@ bool check(const state & s, const bool turn, const int & depth, float & eval, bo
   {
     //if(hashValue != e->m_hash && e->m_depth >= depth)
     //{
-      //std::cout << "bad\n";
+      //std::cout << "bad!!!!!!!!!\n";
     //}
     //std::cout << "exitchecking\n";
     return false;
@@ -167,4 +149,34 @@ bool check(const state & s, const bool turn, const int & depth, float & eval, bo
   prune = e->m_prune;
   //std::cout << "exitchecking\n";
   return true;
+}
+
+unsigned long long int getPieceZooHash(const mypiece * p)
+{
+  char type;
+  if(p->getType() == "Pawn")
+  {
+    type = 0;
+  }
+  else if(p->getType() == "Knight")
+  {
+    type = 1;
+  }
+  else if(p->getType() == "Bishop")
+  {
+    type = 2;
+  }
+  else if(p->getType() == "Rook")
+  {
+    type = 3;
+  }
+  else if(p->getType() == "Queen")
+  {
+    type = 4;
+  }
+  else//else king
+  {
+    type = 5;
+  }
+  return ZOBTABLE[p->isFriendly()][type][p->hashPos()];
 }
