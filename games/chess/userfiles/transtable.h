@@ -82,14 +82,13 @@ void addEntry(const state & s, const bool turn, const int & depth, const float &
   //std::cout << "adding entry\n";
   unsigned long long int hashValue = getHash(s, turn);
   entry* e = &TT[hashValue % TTSIZE];
-  if(depth <= e->m_depth && hashValue == e->m_hash)
+  if(depth > e->m_depth || (depth == e->m_depth && e->m_prune && !prune))
   {
-    return;
+    e->m_depth = depth;
+    e->m_eval = eval;
+    e->m_hash = hashValue;
+    e->m_prune = prune;
   }
-  e->m_depth = depth;
-  e->m_eval = eval;
-  e->m_hash = hashValue;
-  e->m_prune = prune;
   //std::cout << "done adding entry\n";
 }
 
