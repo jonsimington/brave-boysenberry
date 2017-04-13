@@ -1,7 +1,7 @@
 #pragma once
 #include "state.h"
 #include "transtable.h"
-#include "historyTable.h"
+#include "historytable.h"
 #include <cfloat>
 #include <algorithm>
 #include <ctime>
