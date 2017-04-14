@@ -67,7 +67,7 @@ void knight::possibleActions(const state & s, std::vector<action> & allActions) 
   }
 }
 
-float knight::getValue() const
+float knight::getValue(const state & s) const
 {
   return knightValue;
 }

@@ -6,6 +6,7 @@
 #include "pawn.h"
 #include "knight.h"
 #include <sstream>
+#include <cmath>
 
 int fileToInt(const char f)
 {
@@ -401,4 +402,14 @@ bool isUnderAttack(const mypiece & p, const board & theBoard)
     }
   }
   return false;
+}
+
+float sigmoid(const float & t)
+{
+  return 1 / (1 + std::exp(-t)); 
+}
+
+float mySigmoid(const float & x, const float & range)
+{
+  return (x / range * -1.2) / (1 -1.2 - x / range);
 }

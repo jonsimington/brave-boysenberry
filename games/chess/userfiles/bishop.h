@@ -12,6 +12,6 @@ class bishop: public mypiece
     bishop(const int & x, const int & y, const std::string & id, board & b, bool friendly, bool hasMoved);
     virtual void possibleActions(const state & s, std::vector<action> & allActions) const;
     virtual bishop* clone() const;
-    virtual float getValue() const;
+    virtual float getValue(const state & s) const;
   private:
 };

@@ -24,7 +24,7 @@ void queen::possibleActions(const state & s, std::vector<action> & allActions) c
   straightMoves(this, s.m_board, allActions);
 }
 
-float queen::getValue() const
+float queen::getValue(const state & s) const
 {
   return queenValue;
 }

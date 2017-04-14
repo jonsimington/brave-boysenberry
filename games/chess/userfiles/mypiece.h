@@ -24,7 +24,7 @@ class mypiece
     enpassant*/
     virtual void possibleActions(const state & s, std::vector<action> & allActions) const;
     virtual mypiece* clone() const; //clones the piece sending a ptr that points to the new piece
-    virtual float getValue() const;
+    virtual float getValue(const state & s) const;
     void copyValues(const mypiece* rhs); //copies the values from the rhs piece
     bool hasMoved() const;
     bool inUse() const;

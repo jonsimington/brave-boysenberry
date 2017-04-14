@@ -107,7 +107,7 @@ int pawn::getDirection() const
   return m_direction;
 }
 
-float pawn::getValue() const
+float pawn::getValue(const state & s) const
 {
   return pawnValue;
 }

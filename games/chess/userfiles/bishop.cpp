@@ -29,7 +29,7 @@ bishop* bishop::clone() const
   return p;
 }
 
-float bishop::getValue() const
+float bishop::getValue(const state & s) const
 {
   return bishopValue;
 }

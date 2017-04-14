@@ -23,7 +23,7 @@ rook* rook::clone() const
   return p;
 }
 
-float rook::getValue() const
+float rook::getValue(const state & s) const
 {
   return rookValue;
 }

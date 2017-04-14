@@ -2,15 +2,16 @@
 #include "state.h"
 #include "transtable.h"
 #include "historytable.h"
+#include "quiescence.h"
 #include <cfloat>
 #include <algorithm>
 #include <ctime>
 #include <chrono>
 #include <cmath>
 
-action MinMaxSearch(state & s, const int depth);
-float max_value(state & s, float alpha, float beta, const int depth);
-float min_value(state & s, float alpha, float beta, const int depth);
+action MinMaxSearch(state & s, const int depth, const int qdepth);
+float max_value(state & s, float alpha, float beta, const int depth, const int qdepth);
+float min_value(state & s, float alpha, float beta, const int depth, const int qdepth);
 float min_valueP(state & s, float alpha, float beta, const int depth);
 float max_valueP(state & s, float alpha, float beta, const int depth);
 
@@ -27,7 +28,7 @@ action IDTLMMS(state & s, const long & limit)
   while(timeElapsed < limit)
   {
     std::cout << "DepthStart: " << currentDepth << std::endl;
-    a = MinMaxSearch(s, currentDepth);
+    a = MinMaxSearch(s, currentDepth, 2);
     std::cout << "Depthend: " << currentDepth << std::endl;
     currentDepth++;
     timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - start).count();
@@ -46,7 +47,7 @@ action IDTLMMS(state & s, const long & limit)
 }
 
 //Minmax search of set depth
-action MinMaxSearch(state & s, const int depth)
+action MinMaxSearch(state & s, const int depth, const int qdepth)
 {
   /*contains actions that have the same hueristic value
   one random one is returned at the end of the function*/
@@ -59,7 +60,7 @@ action MinMaxSearch(state & s, const int depth)
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    auto value = min_value(s, alpha, beta, depth - 1);
+    auto value = min_value(s, alpha, beta, depth - 1, qdepth);
     s.reverseAction(a);
     if(value > bestActionScore)
     {
@@ -73,7 +74,7 @@ action MinMaxSearch(state & s, const int depth)
   return bestAction;
 }
 
-float max_value(state & s, float alpha, float beta, const int depth)
+float max_value(state & s, float alpha, float beta, const int depth, const int qdepth)
 {
   //std::cout << "max\n";
   float bestActionScore = FLT_MAX * -1;
@@ -91,9 +92,9 @@ float max_value(state & s, float alpha, float beta, const int depth)
       alpha = score;
     }
   }
-  if(depth == 0 || s.isDraw())
+  if((depth == 0 && (isQuiescent(s) || qdepth == 0)) || s.isDraw())
   {
-   return s.getValue();
+    return s.getValue();
   }
   auto allActions = s.possibleActionsF();
   if(allActions.size() == 0)
@@ -109,10 +110,14 @@ float max_value(state & s, float alpha, float beta, const int depth)
   }
   std::sort(allActions.begin(), allActions.end(), ordering());
   action bestAction;
+  float value;
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    auto value = min_value(s, alpha, beta, depth - 1);
+    if(depth != 0)
+      value = min_value(s, alpha, beta, depth - 1, qdepth);
+    else
+      value = min_value(s, alpha, beta, depth, qdepth - 1);
     s.reverseAction(a);
     if(value > bestActionScore)
     {
@@ -133,7 +138,7 @@ float max_value(state & s, float alpha, float beta, const int depth)
   return bestActionScore;
 }
 
-float min_value(state & s, float alpha, float beta, const int depth)
+float min_value(state & s, float alpha, float beta, const int depth, const int qdepth)
 {
   //std::cout << "min\n";
   float bestActionScore = FLT_MAX;
@@ -151,7 +156,7 @@ float min_value(state & s, float alpha, float beta, const int depth)
       beta = score;
     }
   }
-  if(depth == 0 || s.isDraw())
+  if((depth == 0 && (isQuiescent(s) || qdepth == 0)) || s.isDraw())
   {
     return s.getValue();
   }
@@ -169,10 +174,14 @@ float min_value(state & s, float alpha, float beta, const int depth)
   }
   std::sort(allActions.begin(), allActions.end(), ordering());
   action bestAction;
+  float value;
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    auto value = max_value(s, alpha, beta, depth - 1);
+    if(depth != 0)
+      value = max_value(s, alpha, beta, depth - 1, qdepth);
+    else
+      value = max_value(s, alpha, beta, depth, qdepth - 1);
     s.reverseAction(a);
     if(value < bestActionScore)
     {

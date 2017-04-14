@@ -13,7 +13,7 @@ class pawn: public mypiece
     int lookAhead(const int & d) const;
     virtual pawn* clone() const;
     virtual int getDirection() const;
-    virtual float getValue() const;
+    virtual float getValue(const state & s) const;
     /*0 is forward 1 is backwards */
     bool m_direction;
 };

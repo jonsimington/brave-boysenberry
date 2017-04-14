@@ -419,11 +419,11 @@ float state::getValue() const
     {
       if(it->second->isFriendly())
       {
-        value += it->second->getValue();
+        value += it->second->getValue(*this);
       }
       else
       {
-        value -= it->second->getValue();
+        value -= it->second->getValue(*this);
       }
     }
   }

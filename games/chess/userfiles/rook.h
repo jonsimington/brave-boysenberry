@@ -11,6 +11,6 @@ class rook: public mypiece
     rook(const int & x, const int & y, const std::string & s, board & b, bool friendly, bool hasMoved);
     virtual void possibleActions(const state & s, std::vector<action> & allActions) const;
     virtual rook* clone() const;
-    virtual float getValue() const;
+    virtual float getValue(const state & s) const;
   private:
 };

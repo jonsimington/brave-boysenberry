@@ -40,3 +40,5 @@ mypiece* changeType(state & s, mypiece* p, const std::string & typeTo);
 bool isClearHorizontalA(const int & x1, const int & x2, const int & y, const board & theBoard, bool friendly);
 bool isClearHorizontal(const int & x1, const int & x2, const int & y, const board & theBoard);
 bool isUnderAttack(const mypiece & p, const board & theBoard);
+float sigmoid(const float & t);
+float mySigmoid(const float & x, const float & range);
