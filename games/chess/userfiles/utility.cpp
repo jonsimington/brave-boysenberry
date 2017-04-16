@@ -337,6 +337,7 @@ bool isUnderAttack(const mypiece & p, const board & theBoard)
       break;
     }
   }
+  
   if(p.getY() + 2 < boardLength)
   {
     y = p.getY() + 2;

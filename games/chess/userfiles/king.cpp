@@ -45,12 +45,12 @@ void king::possibleActions(const state & s, std::vector<action> & allActions) co
   {
     checkToPlace(this,s.m_board, m_x - 1, m_y, allActions);
   }
-  if(!m_hasMoved && !in_check && (s.m_board)[0][m_y].occupied() && (s.m_board)[0][m_y].getPiece().getType() == "Rook" && 
+  if(!m_hasMoved && !INCHECK && (s.m_board)[0][m_y].occupied() && (s.m_board)[0][m_y].getPiece().getType() == "Rook" && 
      !(s.m_board)[0][m_y].getPiece().m_hasMoved && isClearHorizontalA(m_x - 2, m_x - 1, m_y, s.m_board, m_friendly) && isClearHorizontal(1, m_x - 1, m_y, s.m_board))
   {
     allActions.push_back(action(*this, m_x - 2, m_y));
   }
-  if(!m_hasMoved && !in_check && (s.m_board)[boardLength - 1][m_y].occupied() && (s.m_board)[boardLength - 1][m_y].getPiece().getType() == "Rook" && 
+  if(!m_hasMoved && !INCHECK && (s.m_board)[boardLength - 1][m_y].occupied() && (s.m_board)[boardLength - 1][m_y].getPiece().getType() == "Rook" && 
      !(s.m_board)[boardLength - 1][m_y].getPiece().m_hasMoved && isClearHorizontalA(m_x + 1, m_x + 2, m_y, s.m_board, m_friendly) && isClearHorizontal(m_x + 1, boardLength - 2, m_y, s.m_board))
   {
     allActions.push_back(action(*this, m_x + 2, m_y));

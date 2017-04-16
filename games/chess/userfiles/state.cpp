@@ -337,7 +337,7 @@ std::vector<action> state::possibleActions(const std::vector<mypiece*> & pieces)
   std::vector<action> allActions;
   mypiece* kingptr;
   bool friendly = pieces[0]->isFriendly();
-  in_check = inCheck(friendly);
+  INCHECK = inCheck(friendly);
   if(friendly)
   {
     kingptr = friendlyKing;

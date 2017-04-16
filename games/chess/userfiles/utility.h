@@ -8,8 +8,8 @@
 #include "../../../joueur/src/base_ai.hpp"
 #include "../player.hpp"
 
-static std::vector<std::string> upgrade_types = {"Queen", "Bishop", "Rook", "Knight"};
-static bool in_check = false;
+const std::vector<std::string> upgrade_types = {"Queen", "Bishop", "Rook", "Knight"};
+extern bool INCHECK;
 
 template <typename T>
 std::vector<T> operator + (const std::vector<T> & lhs, const std::vector<T> & rhs)
