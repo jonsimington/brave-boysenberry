@@ -12,8 +12,8 @@
 action MinMaxSearch(state & s, const int depth, const int qdepth);
 float max_value(state & s, float alpha, float beta, const int depth, const int qdepth);
 float min_value(state & s, float alpha, float beta, const int depth, const int qdepth);
-float min_valueP(state & s, float alpha, float beta, const int depth);
-float max_valueP(state & s, float alpha, float beta, const int depth);
+float min_valueP(state & s, float alpha, float beta, const int depth, const int qdepth);
+float max_valueP(state & s, float alpha, float beta, const int depth, const int qdepth);
 
 bool MYTURN;
 
@@ -213,7 +213,7 @@ void pondering(const state & s)
     while(true)
     {
       std::cout << "is pondering: " << currentDepth << std::endl;
-      min_valueP(tempState, alpha, beta, currentDepth);
+      min_valueP(tempState, alpha, beta, currentDepth, 2);
       currentDepth++;
     }
   }
@@ -223,8 +223,9 @@ void pondering(const state & s)
   }
 }
 
-float max_valueP(state & s, float alpha, float beta, const int depth)
+float max_valueP(state & s, float alpha, float beta, const int depth, const int qdepth)
 {
+  //std::cout << "max\n";
   if(MYTURN)
     throw 0;
   float bestActionScore = FLT_MAX * -1;
@@ -242,9 +243,9 @@ float max_valueP(state & s, float alpha, float beta, const int depth)
       alpha = score;
     }
   }
-  if(depth == 0 || s.isDraw())
+  if((depth == 0 && (isQuiescent(s) || qdepth == 0)) || s.isDraw())
   {
-   return s.getValue();
+    return s.getValue();
   }
   auto allActions = s.possibleActionsF();
   if(allActions.size() == 0)
@@ -260,10 +261,14 @@ float max_valueP(state & s, float alpha, float beta, const int depth)
   }
   std::sort(allActions.begin(), allActions.end(), ordering());
   action bestAction;
+  float value;
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    auto value = min_valueP(s, alpha, beta, depth - 1);
+    if(depth != 0)
+      value = min_valueP(s, alpha, beta, depth - 1, qdepth);
+    else
+      value = min_valueP(s, alpha, beta, depth, qdepth - 1);
     s.reverseAction(a);
     if(value > bestActionScore)
     {
@@ -280,11 +285,13 @@ float max_valueP(state & s, float alpha, float beta, const int depth)
   }
   addToHistory(bestAction, depth);
   addEntry(s, true, depth, bestActionScore, false);
+  //std::cout << "end max\n";
   return bestActionScore;
 }
 
-float min_valueP(state & s, float alpha, float beta, const int depth)
+float min_valueP(state & s, float alpha, float beta, const int depth, const int qdepth)
 {
+  //std::cout << "min\n";
   if(MYTURN)
     throw 0;
   float bestActionScore = FLT_MAX;
@@ -302,7 +309,7 @@ float min_valueP(state & s, float alpha, float beta, const int depth)
       beta = score;
     }
   }
-  if(depth == 0 || s.isDraw())
+  if((depth == 0 && (isQuiescent(s) || qdepth == 0)) || s.isDraw())
   {
     return s.getValue();
   }
@@ -320,10 +327,14 @@ float min_valueP(state & s, float alpha, float beta, const int depth)
   }
   std::sort(allActions.begin(), allActions.end(), ordering());
   action bestAction;
+  float value;
   for(const auto & a: allActions)
   {
     s.applyAction(a);
-    auto value = max_valueP(s, alpha, beta, depth - 1);
+    if(depth != 0)
+      value = max_valueP(s, alpha, beta, depth - 1, qdepth);
+    else
+      value = max_valueP(s, alpha, beta, depth, qdepth - 1);
     s.reverseAction(a);
     if(value < bestActionScore)
     {
@@ -340,5 +351,6 @@ float min_valueP(state & s, float alpha, float beta, const int depth)
   }
   addToHistory(bestAction, depth);
   addEntry(s, false, depth, bestActionScore, false);
+  //std::cout << "end min\n";
   return bestActionScore;
 }

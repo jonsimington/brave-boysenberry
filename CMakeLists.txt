@@ -85,3 +85,6 @@ else()
       set_target_properties(${PROG_NAME} PROPERTIES COMPILE_OPTIONS "-std=c++11")
    endif(UNIX OR MINGW)
 endif()
+
+find_package(Threads)
+target_link_libraries(${PROG_NAME} ${CMAKE_THREAD_LIBS_INIT})
