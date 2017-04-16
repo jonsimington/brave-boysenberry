@@ -7,6 +7,7 @@
 #include "knight.h"
 #include <sstream>
 #include <cmath>
+bool INCHECK = false;
 
 int fileToInt(const char f)
 {
