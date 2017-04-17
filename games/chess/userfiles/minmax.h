@@ -71,7 +71,7 @@ action MinMaxSearch(state & s, const int depth, const int qdepth)
       alpha = std::max(alpha, value);
     }
   }
-  addToHistory(bestAction, depth);
+  addToHistory(bestAction, depth + qdepth + 1);
   return bestAction;
 }
 
@@ -111,13 +111,13 @@ float max_value(state & s, float alpha, float beta, const int depth, const int q
       bestAction = a;
       if(value >= beta)
       {
-        addToHistory(bestAction, depth);
+        addToHistory(bestAction, depth + qdepth + 1);
         return value;
       }
       alpha = std::max(alpha, value);
     }
   }
-  addToHistory(bestAction, depth);
+  addToHistory(bestAction, depth + qdepth + 1);
   return bestActionScore;
 }
 
@@ -157,13 +157,13 @@ float min_value(state & s, float alpha, float beta, const int depth, const int q
       bestAction = a;
       if(value <= alpha)
       {
-        addToHistory(bestAction, depth);
+        addToHistory(bestAction, depth + qdepth + 1);
         return value;
       }
       beta = std::min(beta,value);
     }
   }
-  addToHistory(bestAction, depth);
+  addToHistory(bestAction, depth + qdepth + 1);
   return bestActionScore;
 }
 
@@ -226,13 +226,13 @@ float max_valueP(state & s, float alpha, float beta, const int depth, const int 
       bestAction = a;
       if(value >= beta)
       {
-        addToHistory(bestAction, depth);
+        addToHistory(bestAction, depth + qdepth + 1);
         return value;
       }
       alpha = std::max(alpha, value);
     }
   }
-  addToHistory(bestAction, depth);
+  addToHistory(bestAction, depth + qdepth + 1);
   return bestActionScore;
 }
 
@@ -274,12 +274,12 @@ float min_valueP(state & s, float alpha, float beta, const int depth, const int 
       bestAction = a;
       if(value <= alpha)
       {
-        addToHistory(bestAction, depth);
+        addToHistory(bestAction, depth + qdepth + 1);
         return value;
       }
       beta = std::min(beta,value);
     }
   }
-  addToHistory(bestAction, depth);
+  addToHistory(bestAction, depth + qdepth + 1);
   return bestActionScore;
 }
