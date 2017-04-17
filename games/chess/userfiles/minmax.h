@@ -1,6 +1,5 @@
 #pragma once
 #include "state.h"
-#include "transtable.h"
 #include "historytable.h"
 #include "quiescence.h"
 #include <cfloat>
@@ -10,8 +9,11 @@
 #include <cmath>
 
 action MinMaxSearch(state & s, const int depth, const int qdepth);
+//normal alpha beta minmax
 float max_value(state & s, float alpha, float beta, const int depth, const int qdepth);
 float min_value(state & s, float alpha, float beta, const int depth, const int qdepth);
+
+//used for the pondering thread
 float min_valueP(state & s, float alpha, float beta, const int depth, const int qdepth);
 float max_valueP(state & s, float alpha, float beta, const int depth, const int qdepth);
 
@@ -70,28 +72,12 @@ action MinMaxSearch(state & s, const int depth, const int qdepth)
     }
   }
   addToHistory(bestAction, depth);
-  addEntry(s, true, depth, bestActionScore, false);
   return bestAction;
 }
 
 float max_value(state & s, float alpha, float beta, const int depth, const int qdepth)
 {
-  //std::cout << "max\n";
   float bestActionScore = FLT_MAX * -1;
-  bool isPrune;
-  float score;
-  if(check(s, true, depth, score, isPrune))
-  {
-    if(!isPrune)
-    {
-      return score;
-    }
-    else
-    {
-      //bestActionScore = score;
-      alpha = score;
-    }
-  }
   if((depth == 0 && (isQuiescent(s) || qdepth == 0)) || s.isDraw())
   {
     return s.getValue();
@@ -126,36 +112,18 @@ float max_value(state & s, float alpha, float beta, const int depth, const int q
       if(value >= beta)
       {
         addToHistory(bestAction, depth);
-        addEntry(s, true, depth, bestActionScore, true);
         return value;
       }
       alpha = std::max(alpha, value);
     }
   }
   addToHistory(bestAction, depth);
-  addEntry(s, true, depth, bestActionScore, false);
-  //std::cout << "end max\n";
   return bestActionScore;
 }
 
 float min_value(state & s, float alpha, float beta, const int depth, const int qdepth)
 {
-  //std::cout << "min\n";
   float bestActionScore = FLT_MAX;
-  bool isPrune;
-  float score;
-  if(check(s, false, depth, score, isPrune))
-  {
-    if(!isPrune)
-    {
-      return score;
-    }
-    else
-    {
-      //bestActionScore = score;
-      beta = score;
-    }
-  }
   if((depth == 0 && (isQuiescent(s) || qdepth == 0)) || s.isDraw())
   {
     return s.getValue();
@@ -190,15 +158,12 @@ float min_value(state & s, float alpha, float beta, const int depth, const int q
       if(value <= alpha)
       {
         addToHistory(bestAction, depth);
-        addEntry(s, false, depth, bestActionScore, true);
         return value;
       }
       beta = std::min(beta,value);
     }
   }
   addToHistory(bestAction, depth);
-  addEntry(s, false, depth, bestActionScore, false);
-  //std::cout << "end min\n";
   return bestActionScore;
 }
 
@@ -225,24 +190,9 @@ void pondering(const state & s)
 
 float max_valueP(state & s, float alpha, float beta, const int depth, const int qdepth)
 {
-  //std::cout << "max\n";
   if(MYTURN)
     throw 0;
   float bestActionScore = FLT_MAX * -1;
-  bool isPrune;
-  float score;
-  if(check(s, true, depth, score, isPrune))
-  {
-    if(!isPrune)
-    {
-      return score;
-    }
-    else
-    {
-      //bestActionScore = score;
-      alpha = score;
-    }
-  }
   if((depth == 0 && (isQuiescent(s) || qdepth == 0)) || s.isDraw())
   {
     return s.getValue();
@@ -277,38 +227,20 @@ float max_valueP(state & s, float alpha, float beta, const int depth, const int 
       if(value >= beta)
       {
         addToHistory(bestAction, depth);
-        addEntry(s, true, depth, bestActionScore, true);
         return value;
       }
       alpha = std::max(alpha, value);
     }
   }
   addToHistory(bestAction, depth);
-  addEntry(s, true, depth, bestActionScore, false);
-  //std::cout << "end max\n";
   return bestActionScore;
 }
 
 float min_valueP(state & s, float alpha, float beta, const int depth, const int qdepth)
 {
-  //std::cout << "min\n";
   if(MYTURN)
     throw 0;
   float bestActionScore = FLT_MAX;
-  bool isPrune;
-  float score;
-  if(check(s, false, depth, score, isPrune))
-  {
-    if(!isPrune)
-    {
-      return score;
-    }
-    else
-    {
-      //bestActionScore = score;
-      beta = score;
-    }
-  }
   if((depth == 0 && (isQuiescent(s) || qdepth == 0)) || s.isDraw())
   {
     return s.getValue();
@@ -343,14 +275,11 @@ float min_valueP(state & s, float alpha, float beta, const int depth, const int 
       if(value <= alpha)
       {
         addToHistory(bestAction, depth);
-        addEntry(s, false, depth, bestActionScore, true);
         return value;
       }
       beta = std::min(beta,value);
     }
   }
   addToHistory(bestAction, depth);
-  addEntry(s, false, depth, bestActionScore, false);
-  //std::cout << "end min\n";
   return bestActionScore;
 }

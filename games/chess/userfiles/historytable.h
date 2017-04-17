@@ -1,4 +1,6 @@
 #pragma once
+/*my history table is a move from one space on the board
+to another space on the board*/
 unsigned int historyTable[64][64] = {0};
 
 int getHistory(const action & a)

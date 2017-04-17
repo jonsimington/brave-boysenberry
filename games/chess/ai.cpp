@@ -37,7 +37,6 @@ void AI::start()
   std::cout << "Iinitializing game...." << std::endl;
   currentState.m_id = player->id;
   currentState = game;
-  setTables();
   srand(time(NULL));
   std::cout << "done" << std::endl;
 }
@@ -85,7 +84,7 @@ bool AI::run_turn()
   }
   currentState.m_board.print();
   std::cout << std::endl;
-  auto theAction = IDTLMMS(currentState, 2);
+  auto theAction = IDTLMMS(currentState, 1);
   currentState.applyAction(theAction);
   modifyGame(player, theAction);
   std::cout << "Time Remaining: " << player->time_remaining << " ns" << std::endl;
