@@ -26,7 +26,7 @@ namespace chess
 std::string AI::get_name() const
 {
     // REPLACE WITH YOUR TEAM NAME!
-    return myAI;
+    return "Brave Boysenberry";
 }
 
 /// <summary>
